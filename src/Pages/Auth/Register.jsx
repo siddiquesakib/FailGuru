@@ -2,29 +2,40 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
 const Register = () => {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, createUser, updateUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const f = location.state || "/";
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const onsubmit = async (data) => {
+    const { name, image, email, password } = data;
+    // const imageFile = image[0];
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // TODO: hook up to real register flow
-    console.log("Register form:", formData);
+    try {
+      // const imgURL = await imageUpload(imageFile);
+
+      //2. User Registration
+      const result = await createUser(email, password);
+
+      //3. Save username & profile photo
+      await updateUser(name, imgURL);
+      console.log(result);
+
+      navigate(f, { replace: true });
+      toast.success("Signup Successful");
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.message);
+    }
   };
 
   // Handle Google Signin
@@ -67,20 +78,26 @@ const Register = () => {
         Start building your next lesson in minutes.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(onsubmit)} className="space-y-5">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Full name
           </label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
             placeholder="Enter your name"
             className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
+            {...register("name", {
+              required: "name lagbe",
+              maxLength: {
+                value: 20,
+                message: "must be 20 word",
+              },
+            })}
           />
+          {errors.name && (
+            <p className="text-red-600 text-xs">{errors.name.message}</p>
+          )}
         </div>
 
         <div>
@@ -89,13 +106,19 @@ const Register = () => {
           </label>
           <input
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
             placeholder="name@example.com"
             className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
+            {...register("email", {
+              required: "email lagbe",
+              pattern: {
+                value: /@/,
+                message: "email hoi nai",
+              },
+            })}
           />
+          {errors.email && (
+            <p className="text-red-600 text-xs">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Image */}
@@ -111,6 +134,7 @@ const Register = () => {
             id="image"
             accept="image/*"
             className="block w-full text-sm text-gray-500 bg-gray-50 border border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-300 file:text-gray-700 hover:file:bg-gray-400 rounded-md cursor-pointer focus:outline-none py-2"
+            {...register("image")}
           />
           <p className="mt-1 text-xs text-gray-400">
             PNG, JPG or JPEG (max 2MB)
@@ -123,13 +147,19 @@ const Register = () => {
           </label>
           <input
             type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
             placeholder="Create a password"
             className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
+            {...register("password", {
+              required: "password lagbe",
+              minLength: {
+                value: 6,
+                message: "need 6 word",
+              },
+            })}
           />
+          {errors.password && (
+            <p className="text-red-600 text-xs">{errors.password.message}</p>
+          )}
         </div>
 
         <div className="flex items-start gap-2 text-sm text-gray-600">

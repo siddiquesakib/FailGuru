@@ -5,6 +5,8 @@ import Pricing from "../Pages/Payment/Pricing";
 import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import AuthLayout from "../Layouts/AuthLayout";
+import PublicLessons from "../Pages/Lessons/PublicLessons";
+import PublicLessonDetails from "../Pages/Lessons/PublicLessonDetails";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +20,14 @@ export const router = createBrowserRouter([
       {
         path: "pricing",
         element: <Pricing />,
+      },
+      {
+        path: "/publiclessons",
+        Component: PublicLessons,
+      },
+      {
+        path: "/publiclessonsdetails/:id",
+        element: <PublicLessonDetails />,
       },
     ],
   },
