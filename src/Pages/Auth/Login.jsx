@@ -33,9 +33,7 @@ const Login = () => {
 
       {/* Social Login Buttons */}
       <div className="space-y-3 mb-6">
-        <button
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
-        >
+        <button className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
@@ -56,8 +54,6 @@ const Login = () => {
           </svg>
           <span className="text-gray-700 font-medium">Sign in with Google</span>
         </button>
-
-     
       </div>
 
       {/* Divider */}
@@ -110,7 +106,7 @@ const Login = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-gray-300 text-gray-600 font-semibold rounded-full hover:bg-gray-400 transition-colors"
+          className="w-full py-3 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-colors cursor-pointer"
         >
           Sign In
         </button>

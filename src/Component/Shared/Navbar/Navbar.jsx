@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { Link, NavLink } from "react-router";
 import MyNavLink from "./MyNavlink";
 
 const Navbar = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const navlink = (
     <>
       <li>
@@ -25,17 +22,6 @@ const Navbar = () => {
       </li>
     </>
   );
-  const user = {
-    displayName: "John Doe",
-    photoURL: "https://i.pravatar.cc/150?img=12",
-    email: "john@example.com",
-  };
-
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logging out...");
-    setIsDropdownOpen(false);
-  };
 
   return (
     <nav className="bg-[#f9f5f6] border-b border-gray-200">
