@@ -1,2 +1,24 @@
-@import "tailwindcss";
-@plugin "daisyui";
+  @import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lexend+Mega:wght@100..900&display=swap');
+
+
+  @import "tailwindcss";
+
+  @plugin "daisyui" {
+        themes: false;
+  }
+
+
+  * {
+        font-family: "Epilogue", sans-serif;
+  }
+
+  body {
+        background-color: #f9f5f6;
+        min-height: 100vh;
+  }
+
+  .font2 {
+        font-family: "Lexend Mega", sans-serif;
+
+  }
