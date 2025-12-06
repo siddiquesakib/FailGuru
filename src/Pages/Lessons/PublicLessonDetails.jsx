@@ -1,66 +1,75 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import React, { useState, useMemo } from "react";
+import { Link, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import useAuth from "../../hooks/useAuth";
 
 const LessonDetails = () => {
+  const { id } = useParams();
+  const { user } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [comment, setComment] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState("");
 
-  // Check if user is premium and logged in (replace with your auth logic)
-  const isPremiumUser = false;
-  const isLoggedIn = true;
-
-  // Dummy lesson data - replace with API call
-  const lesson = {
-    id: 1,
-    title: "Embracing Failure as Growth",
-    description: `When I was 28, I launched my first startup with everything I had saved. Within 18 months, it had completely failed. I lost my savings, my confidence, and felt like I had wasted years of my life.
-
-But looking back now, that failure taught me more than any success ever could. It taught me resilience, the importance of market research, and most importantly, that failure isn't the end—it's just a redirection.
-
-The key lessons I learned:
-1. Failure is feedback, not a final verdict
-2. Every setback contains seeds of a comeback
-3. Your worth isn't tied to your achievements
-4. The courage to try again is more valuable than initial success
-
-Today, I run a successful company, but I credit that failure for teaching me everything I needed to know. Don't fear failure—embrace it as your greatest teacher.`,
-    category: "Personal Growth",
-    emotionalTone: "Motivational",
-    image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800",
-    createdDate: "2025-01-15",
-    updatedDate: "2025-01-16",
-    visibility: "Public",
-    accessLevel: "Free",
-    creatorName: "Sarah Johnson",
-    creatorPhoto: "https://i.pravatar.cc/150?img=1",
-    creatorTotalLessons: 24,
-    likesCount: 1234,
-    favoritesCount: 342,
-    viewsCount: 8934,
-  };
-
-  const comments = [
-    {
-      id: 1,
-      userName: "John Doe",
-      userPhoto: "https://i.pravatar.cc/150?img=12",
-      comment:
-        "This really resonated with me. Thank you for sharing your experience!",
-      date: "2025-01-17",
+  // Fetch lesson details
+  const { data: lesson, isLoading } = useQuery({
+    queryKey: ["lesson", id],
+    queryFn: async () => {
+      const token = await user?.getIdToken();
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_URL}/lessons/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return result.data;
     },
-    {
-      id: 2,
-      userName: "Emily Smith",
-      userPhoto: "https://i.pravatar.cc/150?img=13",
-      comment:
-        "I needed to read this today. Going through a similar situation.",
-      date: "2025-01-16",
-    },
-  ];
+    enabled: !!id && !!user,
+  });
 
+  // Generate random views count (only once per lesson)
+  const randomViews = useMemo(() => Math.floor(Math.random() * 10000), [id]);
+
+  // Check if user is premium and logged in
+  const isPremiumUser = user?.isPremium || false;
+  const isLoggedIn = !!user;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-xl font-semibold text-gray-700">
+            Loading lesson...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!lesson) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            Lesson not found
+          </h2>
+          <Link
+            to="/publiclessons"
+            className="text-purple-600 hover:text-purple-700 font-semibold"
+          >
+            ← Back to Public Lessons
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Dummy similar lessons and comments
   const similarLessons = [
     {
       id: 2,
@@ -88,6 +97,23 @@ Today, I run a successful company, but I credit that failure for teaching me eve
       image:
         "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300",
       creatorName: "James Williams",
+    },
+  ];
+
+  const comments = [
+    {
+      id: 1,
+      userName: "John Doe",
+      userPhoto: "https://i.pravatar.cc/150?img=7",
+      comment: "This is so inspiring! Thank you for sharing your story.",
+      date: "2025-01-16",
+    },
+    {
+      id: 2,
+      userName: "Jane Smith",
+      userPhoto: "https://i.pravatar.cc/150?img=8",
+      comment: "I needed to read this today. Very motivational!",
+      date: "2025-01-17",
     },
   ];
 
@@ -189,7 +215,7 @@ Today, I run a successful company, but I credit that failure for teaching me eve
       <div className="max-w-5xl mx-auto">
         {/* Back Button */}
         <Link
-          to="/public-lessons"
+          to="/publiclessons"
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6 font-semibold"
         >
           <svg
@@ -281,7 +307,7 @@ Today, I run a successful company, but I credit that failure for teaching me eve
             </div>
 
             {/* Author Section */}
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 mb-6 border-2 border-purple-200">
+            <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-lg p-6 mb-6 border-2 border-purple-200">
               <div className="flex items-center gap-4 mb-4">
                 <img
                   src={lesson.creatorPhoto}
@@ -319,7 +345,9 @@ Today, I run a successful company, but I credit that failure for teaching me eve
                   </span>
                   <span className="flex items-center gap-2">
                     <span className="text-2xl">👀</span>
-                    <span className="font-bold">{lesson.viewsCount}</span>
+                    <span className="font-bold">
+                      {lesson.viewsCount || randomViews}
+                    </span>
                     <span className="text-gray-600">Views</span>
                   </span>
                 </div>

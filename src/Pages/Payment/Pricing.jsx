@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
+import Container from "../../Component/Shared/Container";
 
 const Pricing = () => {
   const pricingPlans = [
@@ -51,8 +52,8 @@ const Pricing = () => {
   ];
 
   return (
-    <div className=" py-16 px-4 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <Container className=" py-16 px-4 min-h-screen">
+      <div className="my-20">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-black mb-4">Choose Your Plan</h1>
           <p className="text-xl text-gray-600">
@@ -109,7 +110,7 @@ const Pricing = () => {
           ))}
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

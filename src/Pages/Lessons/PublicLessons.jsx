@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
+import Container from "../../Component/Shared/Container";
 
 const PublicLessons = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +22,7 @@ const PublicLessons = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessons?${params.toString()}`
       );
+      console.log("Fetched lessons:", result.data);
       return result.data;
     },
   });
@@ -151,11 +153,13 @@ const PublicLessons = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <Container className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="my-15">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2">Public Life Lessons</h1>
+          <h1 className="text-4xl font-black mb-2 font2">
+            Public Life Lessons
+          </h1>
           <p className="text-gray-600 text-lg">
             Explore wisdom and insights shared by our community
           </p>
@@ -251,9 +255,10 @@ const PublicLessons = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => (
             <div
-              key={lesson.id}
+              key={lesson._id}
               className={`bg-white rounded-lg border-3 border-black overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
-                lesson.accessLevel === "Premium" && !isPremiumUser
+                lesson.accessLevel?.toLowerCase() === "premium" &&
+                !isPremiumUser
                   ? "opacity-75 relative"
                   : ""
               }`}
@@ -262,41 +267,48 @@ const PublicLessons = () => {
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={lesson.image}
+                  src={
+                    lesson.image ||
+                    "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400"
+                  }
                   alt={lesson.title}
                   className={`w-full h-full object-cover ${
-                    lesson.accessLevel === "Premium" && !isPremiumUser
+                    lesson.accessLevel?.toLowerCase() === "premium" &&
+                    !isPremiumUser
                       ? "blur-sm"
                       : ""
                   }`}
                 />
-                {lesson.accessLevel === "Premium" && !isPremiumUser && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <svg
-                        className="w-12 h-12 mx-auto mb-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <p className="font-bold text-sm">Premium Lesson</p>
+                {lesson.accessLevel?.toLowerCase() === "premium" &&
+                  !isPremiumUser && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <svg
+                          className="w-12 h-12 mx-auto mb-2"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <p className="font-bold text-sm">Premium Lesson</p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 {/* Access Level Badge */}
                 <div
                   className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${
-                    lesson.accessLevel === "Premium"
+                    lesson.accessLevel?.toLowerCase() === "premium"
                       ? "bg-yellow-400 text-black border-2 border-black"
                       : "bg-green-400 text-black border-2 border-black"
                   }`}
                 >
-                  {lesson.accessLevel}
+                  {lesson.accessLevel?.toLowerCase() === "premium"
+                    ? "Premium"
+                    : "Free"}
                 </div>
               </div>
 
@@ -304,7 +316,8 @@ const PublicLessons = () => {
               <div className="p-5">
                 <h3
                   className={`text-xl font-bold mb-2 ${
-                    lesson.accessLevel === "Premium" && !isPremiumUser
+                    lesson.accessLevel?.toLowerCase() === "premium" &&
+                    !isPremiumUser
                       ? "blur-sm"
                       : ""
                   }`}
@@ -314,7 +327,8 @@ const PublicLessons = () => {
 
                 <p
                   className={`text-gray-600 text-sm mb-4 line-clamp-2 ${
-                    lesson.accessLevel === "Premium" && !isPremiumUser
+                    lesson.accessLevel?.toLowerCase() === "premium" &&
+                    !isPremiumUser
                       ? "blur-sm"
                       : ""
                   }`}
@@ -335,7 +349,9 @@ const PublicLessons = () => {
                 {/* Creator Info */}
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
                   <img
-                    src={lesson.creatorPhoto}
+                    src={
+                      lesson.creatorPhoto || "https://i.pravatar.cc/150?img=1"
+                    }
                     alt={lesson.creatorName}
                     className="w-10 h-10 rounded-full border-2 border-gray-300"
                   />
@@ -353,16 +369,17 @@ const PublicLessons = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <span className="flex items-center gap-1">
-                      ❤️ {lesson.likesCount}
+                      ❤️ {lesson.likesCount || 0}
                     </span>
                     <span className="flex items-center gap-1">
-                      🔖 {lesson.favoritesCount}
+                      🔖 {lesson.favoritesCount || 0}
                     </span>
                   </div>
                 </div>
 
                 {/* Action Button */}
-                {lesson.accessLevel === "Premium" && !isPremiumUser ? (
+                {lesson.accessLevel?.toLowerCase() === "premium" &&
+                !isPremiumUser ? (
                   <Link
                     to="/pricing"
                     className="block w-full text-center py-3 bg-yellow-400 text-black font-bold rounded-lg border-2 border-black transition-all"
@@ -372,7 +389,7 @@ const PublicLessons = () => {
                   </Link>
                 ) : (
                   <Link
-                    to={`/publiclessonsdetails/${lesson.id}`}
+                    to={`/publiclessons/${lesson._id}`}
                     className="block w-full text-center py-3 bg-purple-600 text-white font-bold rounded-lg border-2 border-black transition-all hover:bg-purple-700"
                     style={{ boxShadow: "3px 3px 0px 0px #000" }}
                   >
@@ -396,7 +413,7 @@ const PublicLessons = () => {
           </div>
         )}
       </div>
-    </div>
+    </Container>
   );
 };
 
