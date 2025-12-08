@@ -1,6 +1,7 @@
 import React from "react";
-import { Link } from "react-router";
 import Container from "../../Component/Shared/Container";
+import useAuth from "../../hooks/useAuth";
+import axios from "axios";
 
 const Pricing = () => {
   const pricingPlans = [
@@ -26,7 +27,7 @@ const Pricing = () => {
       name: "PREMIUM",
       description:
         "For professionals who want control, smart features and more freedom to grow their digital academy.",
-      price: " ৳1500",
+      price: "1500",
       bgColor: "bg-orange-100",
       features: [
         "All Free plan features",
@@ -43,9 +44,21 @@ const Pricing = () => {
     },
   ];
 
-  const handlePayment = async ()=>{
-    
-  }
+  const { user } = useAuth();
+
+  const handlePayment = async () => {
+    const paymentInfo = {
+      name: user?.displayName,
+      email: user?.email,
+      image: user?.photoURL,
+    };
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_API_URL}/create-checkout-session`,
+      paymentInfo
+    );
+    console.log(data);
+    window.location.href = data.url;
+  };
 
   return (
     <Container className=" py-16 px-4 min-h-screen">
@@ -73,7 +86,7 @@ const Pricing = () => {
                 <div className="mb-8">
                   <span className="text-5xl font-black">{plan.price}</span>
                   {plan.name === "PREMIUM" ? (
-                    <span className="text-xl font-semibold"> Lifetime</span>
+                    <span className="text-xl font-semibold">৳ Lifetime</span>
                   ) : (
                     <></>
                   )}
@@ -94,8 +107,8 @@ const Pricing = () => {
 
               <dir>
                 {plan.name === "PREMIUM" ? (
-                  <Link
-                    to="/register"
+                  <button
+                    onClick={handlePayment}
                     className="block w-full bg-yellow-300 text-black font-bold py-4 rounded-lg text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
                     style={{
                       border: "3px solid #000",
@@ -109,9 +122,9 @@ const Pricing = () => {
                     }}
                   >
                     Get Premium
-                  </Link>
+                  </button>
                 ) : (
-                  <Link
+                  <button
                     to="/"
                     className="block w-full bg-yellow-300 text-black font-bold py-4 rounded-lg text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
                     style={{
@@ -126,7 +139,7 @@ const Pricing = () => {
                     }}
                   >
                     Get Free
-                  </Link>
+                  </button>
                 )}
               </dir>
             </div>

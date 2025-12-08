@@ -65,7 +65,6 @@ const AddLesson = () => {
     } catch (err) {
       console.log(err);
     }
-
     console.log(data);
   };
 

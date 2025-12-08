@@ -30,16 +30,11 @@ const Register = () => {
     const imgFile = image[0];
 
     try {
-      // 1. Upload image first
       const imgURL = await imageUpload(imgFile);
-
-      // 2. Create Firebase user
       const result = await createUser(email, password);
-
-      // 3. Update Firebase profile
       await updateUser(name, imgURL);
 
-      // 4. Save user data to MongoDB
+      //Save user data to MongoDB
       const usersdata = {
         name,
         email,
