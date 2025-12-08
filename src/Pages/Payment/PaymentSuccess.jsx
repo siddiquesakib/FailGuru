@@ -15,7 +15,6 @@ const PaymentSuccess = () => {
         console.log("User email not available yet");
         return;
       }
-
       try {
         const response = await axios.patch(
           `${import.meta.env.VITE_API_URL}/users/premium/${user.email}`
