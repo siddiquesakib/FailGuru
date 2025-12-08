@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router";
+import { data, Link } from "react-router";
 import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const MyLessons = () => {
   const { user, loading } = useAuth();
@@ -70,8 +72,6 @@ const MyLessons = () => {
     setShowUpdateModal(true);
   };
 
- 
-
   const toggleVisibility = (lessonId, currentPrivacy) => {
     const newPrivacy = currentPrivacy === "Public" ? "Private" : "Public";
     setLessons(
@@ -98,21 +98,19 @@ const MyLessons = () => {
     // Add axios patch request here
   };
 
-  useEffect(() => {
-    if (!user?.email) {
-      console.log("User email not available yet");
-      return;
-    }
+  const { data: mylessons, isLoading } = useQuery({
+    queryKey: ["my-lessons", user?.id],
+    queryFn: async () => {
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_URL}/my-lessons?email=${user.email}`
+      );
 
-    console.log("Fetching lessons for:", user.email);
-    fetch(`${import.meta.env.VITE_API_URL}/my-lessons?email=${user.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("My lessons:", data);
-        setMyLessons(data);
-      })
-      .catch((err) => console.error("Error fetching lessons:", err));
-  }, [user?.email]);
+      setLessons(data);
+      return result.data;
+    },
+  });
+
+  console.log(mylessons);
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -159,12 +157,14 @@ const MyLessons = () => {
     });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#f9f5f6] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+          <p className="text-xl font-semibold text-gray-700">
+            Loading lesson...
+          </p>
         </div>
       </div>
     );
@@ -212,7 +212,7 @@ const MyLessons = () => {
                 </tr>
               </thead>
               <tbody>
-                {myLessons.map((lesson) => (
+                {mylessons.map((lesson) => (
                   <tr
                     key={lesson._id}
                     className="border-b-2 border-gray-200 hover:bg-gray-50"
