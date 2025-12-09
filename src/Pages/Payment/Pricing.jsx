@@ -3,6 +3,7 @@ import Container from "../../Component/Shared/Container";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
 const Pricing = () => {
   const pricingPlans = [
@@ -46,6 +47,7 @@ const Pricing = () => {
   ];
 
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handlePayment = async () => {
     const paymentInfo = {
@@ -62,7 +64,7 @@ const Pricing = () => {
   };
 
   // Fetch user data from MongoDB
-  const { data: userData = null } = useQuery({
+  const { data: userData = null, refetch } = useQuery({
     queryKey: ["userData", user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
@@ -72,12 +74,26 @@ const Pricing = () => {
       );
       return result.data;
     },
-    enabled: !!user?.email, // Only run when user email exists
+    enabled: !!user?.email,
   });
 
-  // Check if user is premium (replace with your actual logic)
   const isPremium =
     userData?.email === user?.email && userData?.isPremium === true;
+
+  //cancle premium
+  const handleCancel = async () => {
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/users/premium/cancel/${user.email}`
+      );
+      console.log("Premium update :", response.data);
+      // Refetch user data to update UI
+      refetch();
+      navigate("/payment-cancle");
+    } catch (error) {
+      console.error("Failed to update premium status:", error);
+    }
+  };
 
   return (
     <div className=" py-16 px-4 min-h-[calc(100vh-250px)] bg-[#f9f5f6]">
@@ -85,10 +101,11 @@ const Pricing = () => {
         {isPremium ? (
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-5xl md:w-5xl mx-auto font-black mb-4 font2">
-              You’re officially a lifetime Premium member.
+              You're officially a lifetime Premium member.
             </h1>
             <p className="text-xl text-gray-600">You can cancel anytime</p>
             <button
+              onClick={handleCancel}
               className="mt-10 px-6 py-2.5 text-xl font-semibold cursor-pointer text-black rounded transition-all relative"
               style={{
                 backgroundColor: "#ffdb58",
@@ -103,7 +120,7 @@ const Pricing = () => {
                 e.currentTarget.style.transform = "translate(0, 0)";
               }}
             >
-              Cancle Premium
+              Cancel Premium
             </button>
           </div>
         ) : (
@@ -158,7 +175,7 @@ const Pricing = () => {
                     </div>
                   </div>
 
-                  <dir>
+                  <div>
                     {plan.name === "PREMIUM" ? (
                       <button
                         onClick={handlePayment}
@@ -198,7 +215,7 @@ const Pricing = () => {
                         Get Free
                       </button>
                     )}
-                  </dir>
+                  </div>
                 </div>
               ))}
             </div>

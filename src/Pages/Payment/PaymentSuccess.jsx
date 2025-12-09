@@ -64,7 +64,7 @@ const PaymentSuccess = () => {
 
         {/* Subtitle */}
         <p className="text-gray-700 text-lg leading-relaxed mb-8">
-          You’re now a{" "}
+          You're now a{" "}
           <span className="text-yellow-700 font-semibold">Premium Member</span>{" "}
           ⭐
           <br /> Enjoy lifetime access to all premium features!

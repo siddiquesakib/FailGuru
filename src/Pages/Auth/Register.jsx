@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { imageUpload, saveOrUpdateUser } from "../../Utils";
+import { imageUpload } from "../../Utils";
 
 const Register = () => {
   const { signInWithGoogle, createUser, updateUser } = useAuth();
@@ -32,6 +32,7 @@ const Register = () => {
     try {
       const imgURL = await imageUpload(imgFile);
       const result = await createUser(email, password);
+      console.log(result);
 
       // await saveOrUpdateUser({ name, email, image: imgURL });
 

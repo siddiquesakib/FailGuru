@@ -14,6 +14,7 @@ import MyLessons from "../Pages/Dashboard/MyLessons";
 import PaymentSuccess from "../Pages/Payment/PaymentSuccess";
 import MyFavorites from "../Pages/Lessons/MyFavorites";
 import LessonDetails from "../Pages/Lessons/LessonDetails";
+import PaymentCancle from "../Pages/Payment/PaymentCancle";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: "payment-success",
         element: <PaymentSuccess />,
+      },
+      {
+        path: "payment-cancle",
+        element: <PaymentCancle />,
       },
       {
         path: "/publiclessons",

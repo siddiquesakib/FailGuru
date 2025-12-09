@@ -2,6 +2,8 @@ import { Link, NavLink } from "react-router";
 import MyNavLink from "./MyNavlink";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -37,8 +39,26 @@ const Navbar = () => {
       });
   };
 
+  // Fetch user data from MongoDB
+  const { data: userData = null } = useQuery({
+    queryKey: ["userData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_URL}/users/${user.email}`
+      );
+      return result.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Check if user is premium
+  const isPremiumUser =
+    userData?.email === user?.email && userData?.isPremium === true;
+
   return (
-    <nav className="bg-[#f9f5f6] border-b border-gray-200">
+    <nav className={`border-b border-gray-200 bg-[#f9f5f6]`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -58,16 +78,22 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="flex items-center gap-3">
             {user ? (
-              <div className="relative group">
+              <div className="relative group ">
                 {/* Avatar */}
-                <button className="w-10 h-10 rounded-full border-2 border-black overflow-hidden hover:border-purple-600 transition-all">
-                  <img
-                    src={user?.photoURL}
-                    alt={user?.displayName}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-
+                <div className="flex justify-center items-center gap-1.5">
+                  {isPremiumUser ? (
+                    <h1 className="font-semibold text-[#f0b127]">Premium ⭐</h1>
+                  ) : (
+                    <></>
+                  )}
+                  <button className="w-10 h-10 rounded-full border-2 border-[#ffbb24] overflow-hidden hover:border-purple-600 transition-all">
+                    <img
+                      src={user?.photoURL}
+                      alt={user?.displayName}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                </div>
                 {/* Dropdown Menu */}
                 <div
                   className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-3 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"

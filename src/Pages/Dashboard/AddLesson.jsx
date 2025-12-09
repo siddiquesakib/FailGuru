@@ -77,13 +77,12 @@ const AddLesson = () => {
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
 
-
-   // Fetch user data from MongoDB
+  // Fetch user data from MongoDB
   const { data: userData = null } = useQuery({
     queryKey: ["userData", user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      
+
       const result = await axios.get(
         `${import.meta.env.VITE_API_URL}/users/${user.email}`
       );
@@ -92,9 +91,8 @@ const AddLesson = () => {
     enabled: !!user?.email, // Only run when user email exists
   });
 
-
-  // Check if user is premium (replace with your actual logic)
-  const isPremium = userData?.email === user?.email && userData?.isPremium === true;
+  const isPremium =
+    userData?.email === user?.email && userData?.isPremium === true;
 
   return (
     <div className="min-h-screen bg-[#f9f5f6] py-8 my-10 px-4">

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 import Container from "../../Component/Shared/Container";
@@ -7,12 +7,11 @@ import useAuth from "../../hooks/useAuth";
 
 const PublicLessons = () => {
   const { user } = useAuth();
-  console.log(user);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTone, setSelectedTone] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  // const { userData, setUserData } = useState(null);
+  // const  [userData, setUserData] = useState(null);
 
   const { data: lessons = [], isLoading } = useQuery({
     queryKey: ["lessons", searchTerm, selectedCategory, selectedTone, sortBy],
@@ -40,6 +39,10 @@ const PublicLessons = () => {
     enabled: !!user?.email,
   });
 
+  // Check if user is premium
+  const isPremiumUser =
+    userData?.email === user?.email && userData?.isPremium === true;
+
   const categories = [
     "Personal Growth",
     "Career",
@@ -48,10 +51,6 @@ const PublicLessons = () => {
     "Mistakes Learned",
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
-
-  // Check if user is premium
-  const isPremiumUser =
-    userData?.email === user?.email && userData?.isPremium === true;
 
   console.log("Auth User Email:", user?.email);
   console.log("DB User Data:", userData);
