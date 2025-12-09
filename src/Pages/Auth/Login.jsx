@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,16 +11,49 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const f = location.state || "/";
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signIn } = useAuth(); // Add signIn
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (dataregister) =>
+      await axios.post(`${import.meta.env.VITE_API_URL}/users`, dataregister),
+  });
+
+  // Handle Email/Password Login
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await signIn(email, password);
+
+      // Update user data in DB (updatedAt)
+      const userData = {
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+      };
+      await mutateAsync(userData);
+
+      navigate(f, { replace: true });
+      toast.success("Login Successful");
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.message || "Login failed");
+    }
+  };
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {
     try {
-      //User Registration using google
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+
+      const userData = {
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+      };
+      await mutateAsync(userData);
 
       navigate(f, { replace: true });
-      toast.success("Signup Successful");
+      toast.success("Login Successful");
     } catch (err) {
       console.log(err);
       toast.error(err?.message);
@@ -89,7 +124,7 @@ const Login = () => {
       </div>
 
       {/* Email/Password Form */}
-      <form className="space-y-5">
+      <form onSubmit={handleEmailLogin} className="space-y-5">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Email

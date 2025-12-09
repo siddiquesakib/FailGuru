@@ -27,6 +27,8 @@ const PaymentSuccess = () => {
 
     updatePremium();
   }, [user?.email]);
+
+  
   return (
     <div className="flex items-center justify-center p-6 my-10 bg-[#f9f5f6]">
       <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-10 max-w-lg text-center shadow-2xl">

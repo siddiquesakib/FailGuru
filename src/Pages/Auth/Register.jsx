@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { imageUpload } from "../../Utils";
+import { imageUpload, saveOrUpdateUser } from "../../Utils";
 
 const Register = () => {
   const { signInWithGoogle, createUser, updateUser } = useAuth();
@@ -32,6 +32,9 @@ const Register = () => {
     try {
       const imgURL = await imageUpload(imgFile);
       const result = await createUser(email, password);
+
+      // await saveOrUpdateUser({ name, email, image: imgURL });
+
       await updateUser(name, imgURL);
 
       //Save user data to MongoDB
@@ -39,12 +42,6 @@ const Register = () => {
         name,
         email,
         photoURL: imgURL,
-        role: "user",
-        isPremium: false,
-        totalLessonsCreated: 0,
-        totalLessonsSaved: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       };
       await mutateAsync(usersdata);
 
@@ -60,23 +57,22 @@ const Register = () => {
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {
-    const result = await signInWithGoogle();
+    try {
+      const result = await signInWithGoogle();
 
-    // Save to DB
-    const userData = {
-      name: result.user.displayName,
-      email: result.user.email,
-      photoURL: result.user.photoURL,
-      role: "user",
-      isPremium: false,
-      totalLessonsCreated: 0,
-      totalLessonsSaved: 0,
-      createdAt: new Date().toISOString(),
-    };
-    await mutateAsync(userData);
+      const userData = {
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+      };
+      await mutateAsync(userData);
 
-    navigate(f, { replace: true });
-    toast.success("Signup Successful");
+      navigate(f, { replace: true });
+      toast.success("Signup Successful");
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.message);
+    }
   };
 
   return (

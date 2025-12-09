@@ -1,17 +1,23 @@
 import axios from "axios";
 
- export const imageUpload= async imgData =>{
-      const formData = new FormData();
-    formData.append("image", imgData);
+export const imageUpload = async (imgData) => {
+  const formData = new FormData();
+  formData.append("image", imgData);
+  const { data } = await axios.post(
+    `https://api.imgbb.com/1/upload?expiration=600&key=${
+      import.meta.env.VITE_IMGBB_API_KEY
+    }`,
+    formData
+  );
+  return data?.data?.display_url;
+};
 
+//save or update user in db
 
-    const { data } = await axios.post(
-        `https://api.imgbb.com/1/upload?expiration=600&key=${
-          import.meta.env.VITE_IMGBB_API_KEY
-        }`,
-        formData
-      );
-
-      return data?.data?.display_url;
-
- }
+export const saveOrUpdateUser = async (useData) => {
+  const { data } = await axios.post(
+    `${import.meta.env.VITE_API_URL}/users`,
+    useData
+  );
+  return data;
+};

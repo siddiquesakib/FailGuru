@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { data, Link } from "react-router";
+import { Link } from "react-router";
 import Swal from "sweetalert2";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { imageUpload } from "../../Utils";
+import { toast } from "react-toastify";
 
 const MyLessons = () => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   console.log("User:", user);
   const [myLessons, setMyLessons] = useState([]);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
-  const [updateFormData, setUpdateFormData] = useState({});
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm();
 
   // Check if user is premium
   const isPremium = false;
@@ -58,60 +68,24 @@ const MyLessons = () => {
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
 
-  const openUpdateModal = (lesson) => {
-    setSelectedLesson(lesson);
-    setUpdateFormData({
-      title: lesson.title,
-      description: lesson.description,
-      category: lesson.category,
-      emotionalTone: lesson.emotionalTone,
-      image: lesson.image,
-      privacy: lesson.privacy,
-      accessLevel: lesson.accessLevel,
-    });
-    setShowUpdateModal(true);
-  };
-
-  const toggleVisibility = (lessonId, currentPrivacy) => {
-    const newPrivacy = currentPrivacy === "Public" ? "Private" : "Public";
-    setLessons(
-      lessons.map((l) =>
-        l._id === lessonId ? { ...l, privacy: newPrivacy } : l
-      )
-    );
-    console.log("Visibility toggled:", lessonId, newPrivacy);
-    // Add axios patch request here
-  };
-
-  const toggleAccessLevel = (lessonId, currentLevel) => {
-    if (!isPremium) {
-      alert("Upgrade to Premium to change access level");
-      return;
-    }
-    const newLevel = currentLevel === "Free" ? "Premium" : "Free";
-    setLessons(
-      lessons.map((l) =>
-        l._id === lessonId ? { ...l, accessLevel: newLevel } : l
-      )
-    );
-    console.log("Access level toggled:", lessonId, newLevel);
-    // Add axios patch request here
-  };
-
-  const { data: mylessons, isLoading } = useQuery({
+  //fetch lessons
+  const {
+    data: mylessons,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["my-lessons", user?.id],
     queryFn: async () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_URL}/my-lessons?email=${user.email}`
       );
 
-      setLessons(data);
+      setLessons(result.data);
       return result.data;
     },
   });
 
-  console.log(mylessons);
-
+  //delete lesson
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -144,6 +118,7 @@ const MyLessons = () => {
               text: "Your lesson has been deleted.",
               icon: "success",
             });
+            refetch();
           })
           .catch((err) => {
             console.error("Delete error:", err);
@@ -155,6 +130,103 @@ const MyLessons = () => {
           });
       }
     });
+  };
+
+  // Update mutation
+  const { mutateAsync: updateLesson } = useMutation({
+    mutationFn: async ({ id, payload }) =>
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/my-lessons/${id}`,
+        payload
+      ),
+    onSuccess: () => {
+      toast.success("Lesson updated successfully!");
+      setShowUpdateModal(false);
+      // Refetch lessons after update
+      refetch();
+    },
+  });
+
+  const openUpdateModal = (lesson) => {
+    setSelectedLesson(lesson);
+    // Set form values
+    setValue("title", lesson.title);
+    setValue("description", lesson.description);
+    setValue("category", lesson.category);
+    setValue("emotionalTone", lesson.emotionalTone);
+    setValue("privacy", lesson.privacy);
+    setValue("accessLevel", lesson.accessLevel);
+    setValue("currentImage", lesson.image);
+    setShowUpdateModal(true);
+  };
+
+  const onUpdate = async (data) => {
+    const {
+      title,
+      description,
+      emotionalTone,
+      privacy,
+      accessLevel,
+      category,
+      image,
+      currentImage,
+    } = data;
+
+    try {
+      let imgUrl = currentImage;
+
+      // If new image is uploaded
+      if (image && image[0]) {
+        const imgFile = image[0];
+        imgUrl = await imageUpload(imgFile);
+      }
+
+      const updatedLessonData = {
+        title,
+        description,
+        category,
+        emotionalTone,
+        image: imgUrl,
+        privacy,
+        accessLevel,
+        updatedDate: new Date().toISOString(),
+      };
+
+      await updateLesson({
+        id: selectedLesson._id,
+        payload: updatedLessonData,
+      });
+      reset();
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to update lesson");
+    }
+  };
+
+  const toggleVisibility = (lessonId, currentPrivacy) => {
+    const newPrivacy = currentPrivacy === "Public" ? "Private" : "Public";
+    setLessons(
+      lessons.map((l) =>
+        l._id === lessonId ? { ...l, privacy: newPrivacy } : l
+      )
+    );
+    console.log("Visibility toggled:", lessonId, newPrivacy);
+    // Add axios patch request here
+  };
+
+  const toggleAccessLevel = (lessonId, currentLevel) => {
+    if (!isPremium) {
+      alert("Upgrade to Premium to change access level");
+      return;
+    }
+    const newLevel = currentLevel === "Free" ? "Premium" : "Free";
+    setLessons(
+      lessons.map((l) =>
+        l._id === lessonId ? { ...l, accessLevel: newLevel } : l
+      )
+    );
+    console.log("Access level toggled:", lessonId, newLevel);
+    // Add axios patch request here
   };
 
   if (isLoading) {
@@ -321,26 +393,7 @@ const MyLessons = () => {
           >
             <h2 className="text-3xl font-black mb-6">Update Lesson</h2>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const updatedLesson = {
-                  ...updateFormData,
-                  updatedDate: new Date().toISOString(),
-                };
-                setLessons(
-                  lessons.map((l) =>
-                    l._id === selectedLesson._id
-                      ? { ...l, ...updatedLesson }
-                      : l
-                  )
-                );
-                console.log("Updated lesson:", updatedLesson);
-                alert("Lesson updated successfully!");
-                setShowUpdateModal(false);
-                // Add axios patch request here
-              }}
-            >
+            <form onSubmit={handleSubmit(onUpdate)}>
               {/* Title */}
               <div className="mb-4">
                 <label className="block text-sm font-bold mb-2">
@@ -348,16 +401,24 @@ const MyLessons = () => {
                 </label>
                 <input
                   type="text"
-                  value={updateFormData.title}
-                  onChange={(e) =>
-                    setUpdateFormData({
-                      ...updateFormData,
-                      title: e.target.value,
-                    })
-                  }
+                  {...register("title", {
+                    required: "Title is required",
+                    minLength: {
+                      value: 5,
+                      message: "Title must be at least 5 characters",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Title must be less than 100 characters",
+                    },
+                  })}
                   className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                  required
                 />
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.title.message}
+                  </p>
+                )}
               </div>
 
               {/* Description */}
@@ -366,17 +427,25 @@ const MyLessons = () => {
                   Description *
                 </label>
                 <textarea
-                  value={updateFormData.description}
-                  onChange={(e) =>
-                    setUpdateFormData({
-                      ...updateFormData,
-                      description: e.target.value,
-                    })
-                  }
+                  {...register("description", {
+                    required: "Description is required",
+                    minLength: {
+                      value: 20,
+                      message: "Description must be at least 20 characters",
+                    },
+                    maxLength: {
+                      value: 1000,
+                      message: "Description must be less than 1000 characters",
+                    },
+                  })}
                   rows="6"
                   className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                  required
                 />
+                {errors.description && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.description.message}
+                  </p>
+                )}
               </div>
 
               {/* Category & Emotional Tone */}
@@ -386,15 +455,10 @@ const MyLessons = () => {
                     Category *
                   </label>
                   <select
-                    value={updateFormData.category}
-                    onChange={(e) =>
-                      setUpdateFormData({
-                        ...updateFormData,
-                        category: e.target.value,
-                      })
-                    }
+                    {...register("category", {
+                      required: "Category is required",
+                    })}
                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                    required
                   >
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
@@ -402,21 +466,21 @@ const MyLessons = () => {
                       </option>
                     ))}
                   </select>
+                  {errors.category && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.category.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-2">
                     Emotional Tone *
                   </label>
                   <select
-                    value={updateFormData.emotionalTone}
-                    onChange={(e) =>
-                      setUpdateFormData({
-                        ...updateFormData,
-                        emotionalTone: e.target.value,
-                      })
-                    }
+                    {...register("emotionalTone", {
+                      required: "Emotional tone is required",
+                    })}
                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                    required
                   >
                     {emotionalTones.map((tone) => (
                       <option key={tone} value={tone}>
@@ -424,25 +488,29 @@ const MyLessons = () => {
                       </option>
                     ))}
                   </select>
+                  {errors.emotionalTone && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.emotionalTone.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
               {/* Image */}
               <div className="mb-4">
                 <label className="block text-sm font-bold mb-2">
-                  Image URL
+                  Upload New Image (Optional)
                 </label>
                 <input
-                  type="url"
-                  value={updateFormData.image}
-                  onChange={(e) =>
-                    setUpdateFormData({
-                      ...updateFormData,
-                      image: e.target.value,
-                    })
-                  }
+                  type="file"
+                  {...register("image")}
+                  accept="image/*"
                   className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
                 />
+                <input type="hidden" {...register("currentImage")} />
+                <p className="text-xs text-gray-500 mt-1">
+                  Leave empty to keep current image
+                </p>
               </div>
 
               {/* Privacy & Access Level */}
@@ -452,43 +520,43 @@ const MyLessons = () => {
                     Privacy *
                   </label>
                   <select
-                    value={updateFormData.privacy}
-                    onChange={(e) =>
-                      setUpdateFormData({
-                        ...updateFormData,
-                        privacy: e.target.value,
-                      })
-                    }
+                    {...register("privacy", {
+                      required: "Privacy is required",
+                    })}
                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                    required
                   >
                     <option value="Public">Public</option>
                     <option value="Private">Private</option>
                   </select>
+                  {errors.privacy && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.privacy.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-2">
                     Access Level *
                   </label>
                   <select
-                    value={updateFormData.accessLevel}
-                    onChange={(e) =>
-                      setUpdateFormData({
-                        ...updateFormData,
-                        accessLevel: e.target.value,
-                      })
-                    }
+                    {...register("accessLevel", {
+                      required: "Access level is required",
+                    })}
                     disabled={!isPremium}
                     className={`w-full px-4 py-2 border-2 border-gray-300 rounded-lg ${
                       !isPremium ? "bg-gray-100" : ""
                     }`}
-                    required
                   >
                     <option value="Free">Free</option>
                     <option value="Premium" disabled={!isPremium}>
                       Premium
                     </option>
                   </select>
+                  {errors.accessLevel && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.accessLevel.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -502,7 +570,10 @@ const MyLessons = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowUpdateModal(false)}
+                  onClick={() => {
+                    setShowUpdateModal(false);
+                    reset();
+                  }}
                   className="flex-1 py-3 bg-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-400"
                 >
                   Cancel

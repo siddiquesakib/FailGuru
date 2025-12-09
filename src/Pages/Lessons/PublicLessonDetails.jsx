@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -27,9 +27,8 @@ const LessonDetails = () => {
   });
 
   // Generate random views count (only once per lesson)
-  const randomViews = useMemo(() => Math.floor(Math.random() * 10000), [id]);
+  // const randomViews = useMemo(() => Math.floor(Math.random() * 10000), [id]);
 
-  
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -42,8 +41,6 @@ const LessonDetails = () => {
       </div>
     );
   }
-
- 
 
   // Dummy similar lessons and comments
   const similarLessons = [
@@ -101,8 +98,6 @@ const LessonDetails = () => {
     "Sensitive or Disturbing Content",
     "Other",
   ];
-
-  
 
   const handleLike = () => {
     if (!isLoggedIn) {
@@ -278,9 +273,7 @@ const LessonDetails = () => {
                   </span>
                   <span className="flex items-center gap-2">
                     <span className="text-2xl">👀</span>
-                    <span className="font-bold">
-                      {lesson.viewsCount || randomViews}
-                    </span>
+                    <span className="font-bold">{lesson.viewsCount}</span>
                     <span className="text-gray-600">Views</span>
                   </span>
                 </div>
