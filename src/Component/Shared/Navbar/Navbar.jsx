@@ -86,6 +86,12 @@ const Navbar = () => {
                     >
                       👤 Profile
                     </Link>
+                    <Link
+                      to="/dashboard/my-favorite"
+                      className="block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-purple-50 transition-colors"
+                    >
+                      🔖 My Favorite
+                    </Link>
                     <button
                       onClick={handleLogOut}
                       className="w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"

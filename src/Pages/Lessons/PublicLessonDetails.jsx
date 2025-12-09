@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
@@ -8,13 +8,18 @@ import { toast } from "react-toastify";
 const LessonDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
-  const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState("");
 
+  const queryClient = useQueryClient();
+
   // Fetch lesson details
-  const { data: lesson, isLoading, refetch: refetchLesson } = useQuery({
+  const {
+    data: lesson,
+    isLoading,
+    refetch: refetchLesson,
+  } = useQuery({
     queryKey: ["lesson", id],
     queryFn: async () => {
       const result = await axios.get(
@@ -25,12 +30,79 @@ const LessonDetails = () => {
     enabled: !!id,
   });
 
+  // Calculate isLiked from lesson data
+  const isLiked = lesson && user?.email
+    ? Array.isArray(lesson.likes) && lesson.likes.includes(user.email)
+    : false;
+
+  // Toggle like mutation
+  const toggleLikeMutation = useMutation({
+    mutationFn: async ({ lessonId, userEmail }) => {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/lessons/${lessonId}/like`,
+        { userEmail }
+      );
+      return res.data;
+    },
+    onMutate: async ({ userEmail }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries(["lesson", id]);
+
+      // Snapshot previous value
+      const previousLesson = queryClient.getQueryData(["lesson", id]);
+
+      // Optimistically update
+      queryClient.setQueryData(["lesson", id], (old) => {
+        if (!old) return old;
+        
+        const currentlyLiked = Array.isArray(old.likes) && old.likes.includes(userEmail);
+        
+        return {
+          ...old,
+          likes: currentlyLiked
+            ? old.likes.filter(email => email !== userEmail)
+            : [...(old.likes || []), userEmail],
+          likesCount: currentlyLiked
+            ? Math.max(0, (old.likesCount || 0) - 1)
+            : (old.likesCount || 0) + 1
+        };
+      });
+
+      return { previousLesson };
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousLesson) {
+        queryClient.setQueryData(["lesson", id], context.previousLesson);
+      }
+      toast.error("Failed to update like");
+    },
+    onSuccess: (updatedLesson) => {
+      // Update with server data
+      queryClient.setQueryData(["lesson", id], updatedLesson);
+    },
+  });
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error("Please log in to like");
+      return;
+    }
+
+    toggleLikeMutation.mutate({
+      lessonId: id,
+      userEmail: user.email,
+    });
+  };
+
   // Check if favorited
   const { data: favoriteStatus, refetch: refetchFavorite } = useQuery({
     queryKey: ["favorite-status", id, user?.email],
     queryFn: async () => {
       const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/favorites/check/${id}?email=${user.email}`
+        `${import.meta.env.VITE_API_URL}/favorites/check/${id}?email=${
+          user.email
+        }`
       );
       return result.data;
     },
@@ -46,7 +118,7 @@ const LessonDetails = () => {
     onSuccess: () => {
       toast.success("Added to favorites!");
       refetchFavorite();
-      refetchLesson(); // Refetch to update count
+      refetchLesson();
     },
   });
 
@@ -54,12 +126,14 @@ const LessonDetails = () => {
   const { mutateAsync: removeFromFavorites } = useMutation({
     mutationFn: async (lessonId) =>
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/favorites/${lessonId}?userEmail=${user.email}`
+        `${import.meta.env.VITE_API_URL}/favorites/${lessonId}?userEmail=${
+          user.email
+        }`
       ),
     onSuccess: () => {
       toast.success("Removed from favorites!");
       refetchFavorite();
-      refetchLesson(); // Refetch to update count
+      refetchLesson();
     },
   });
 
@@ -80,6 +154,7 @@ const LessonDetails = () => {
           lessonTitle: lesson.title,
           lessonImage: lesson.image,
           lessonCategory: lesson.category,
+          lessonTone: lesson.emotionalTone,
         });
       }
     } catch (error) {
@@ -109,37 +184,6 @@ const LessonDetails = () => {
     );
   }
 
-  // Dummy similar lessons and comments
-  const similarLessons = [
-    {
-      id: 2,
-      title: "The Power of Saying No",
-      category: "Mindset",
-      emotionalTone: "Realization",
-      image:
-        "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=300",
-      creatorName: "Michael Chen",
-    },
-    {
-      id: 3,
-      title: "Career Pivot at 35",
-      category: "Career",
-      emotionalTone: "Motivational",
-      image:
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300",
-      creatorName: "Emily Rodriguez",
-    },
-    {
-      id: 4,
-      title: "Healing Through Gratitude",
-      category: "Personal Growth",
-      emotionalTone: "Gratitude",
-      image:
-        "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300",
-      creatorName: "James Williams",
-    },
-  ];
-
   const comments = [
     {
       id: 1,
@@ -165,14 +209,6 @@ const LessonDetails = () => {
     "Sensitive or Disturbing Content",
     "Other",
   ];
-
-  const handleLike = () => {
-    if (!user) {
-      toast.error("Please log in to like");
-      return;
-    }
-    setIsLiked(!isLiked);
-  };
 
   const handleReport = () => {
     if (!reportReason) {
@@ -337,7 +373,7 @@ const LessonDetails = () => {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={handleFavoriteToggle}
-                  className={`px-5 py-3 font-bold rounded-lg border-2 border-black transition-all ${
+                  className={`px-5 py-3 font-bold rounded-lg border-2 border-black transition-all cursor-pointer ${
                     isFavorited
                       ? "bg-purple-400 text-white"
                       : "bg-white text-black hover:bg-gray-50"
@@ -349,14 +385,15 @@ const LessonDetails = () => {
 
                 <button
                   onClick={handleLike}
-                  className={`px-5 py-3 font-bold rounded-lg border-2 border-black transition-all ${
+                  disabled={toggleLikeMutation.isPending}
+                  className={`px-5 py-3 font-bold rounded-lg border-2 border-black transition-all cursor-pointer ${
                     isLiked
                       ? "bg-pink-400 text-white"
                       : "bg-white text-black hover:bg-gray-50"
-                  }`}
+                  } ${toggleLikeMutation.isPending ? "opacity-60 cursor-not-allowed" : ""}`}
                   style={{ boxShadow: "3px 3px 0px 0px #000" }}
                 >
-                  {isLiked ? "❤️ Liked" : "❤️ Like"}
+                  {toggleLikeMutation.isPending ? "⏳ Updating..." : isLiked ? "❤️ Liked" : "❤️ Like"}
                 </button>
 
                 <button
@@ -428,35 +465,6 @@ const LessonDetails = () => {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Similar Lessons */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-black mb-6">Similar Lessons</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {similarLessons.map((similar) => (
-              <Link
-                key={similar.id}
-                to={`/publiclessons/${similar.id}`}
-                className="bg-white rounded-lg border-3 border-black overflow-hidden transition-all hover:-translate-y-1"
-                style={{ boxShadow: "4px 4px 0px 0px #000" }}
-              >
-                <img
-                  src={similar.image}
-                  alt={similar.title}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-2">{similar.title}</h3>
-                  <div className="flex gap-2">
-                    <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded">
-                      {similar.category}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </div>
