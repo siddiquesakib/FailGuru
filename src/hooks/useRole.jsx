@@ -12,7 +12,7 @@ const useRole = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_URL}/user/role/${user.email}`
       );
-      console.log("User Role:", result.data);
+      // console.log("User Role:", result.data);
       return result.data.role;
     },
   });

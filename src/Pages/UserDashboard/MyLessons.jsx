@@ -162,24 +162,7 @@ const MyLessons = () => {
     }
   };
 
-  const toggleAccessLevel = async (lessonId, currentLevel) => {
-    if (!isPremiumUser) {
-      toast.error("Upgrade to Premium to change access level");
-      return;
-    }
-    const newLevel = currentLevel === "Free" ? "Premium" : "Free";
-    try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/my-lessons/${lessonId}`,
-        { accessLevel: newLevel }
-      );
-      toast.success(`Access level changed to ${newLevel}`);
-      refetch();
-    } catch (error) {
-      console.error("Error toggling access level:", error);
-      toast.error("Failed to change access level");
-    }
-  };
+
 
   if (isLoading) {
     return (
