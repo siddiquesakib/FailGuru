@@ -8,14 +8,15 @@ import AuthLayout from "../Layouts/AuthLayout";
 import PublicLessons from "../Pages/Lessons/PublicLessons";
 import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../Layouts/DashboardLayout";
-import Profile from "../Pages/Dashboard/Profile";
-import AddLesson from "../Pages/Dashboard/AddLesson";
-import MyLessons from "../Pages/Dashboard/MyLessons";
+import Profile from "../Pages/UserDashboard/Profile";
+import AddLesson from "../Pages/UserDashboard/AddLesson";
+import MyLessons from "../Pages/UserDashboard/MyLessons";
 import PaymentSuccess from "../Pages/Payment/PaymentSuccess";
-import MyFavorites from "../Pages/Lessons/MyFavorites";
 import LessonDetails from "../Pages/Lessons/LessonDetails";
 import PaymentCancle from "../Pages/Payment/PaymentCancle";
 import Error from "../Pages/Error/Error";
+import UserDashboard from "../Pages/UserDashboard/UserDashboard";
+import MyFavorites from "../Pages/UserDashboard/MyFavorites";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,14 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <UserDashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "profile",
         element: (
           <PrivateRoute>
@@ -81,15 +90,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "add-lesson",
-        Component: AddLesson,
+        element: (
+          <PrivateRoute>
+            <AddLesson />
+          </PrivateRoute>
+        ),
       },
       {
         path: "my-lesson",
-        Component: MyLessons,
+        element: (
+          <PrivateRoute>
+            <MyLessons />
+          </PrivateRoute>
+        ),
       },
       {
         path: "my-favorite",
-        Component: MyFavorites,
+        element: (
+          <PrivateRoute>
+            <MyFavorites />
+          </PrivateRoute>
+        ),
       },
     ],
   },

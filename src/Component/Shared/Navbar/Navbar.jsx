@@ -2,12 +2,10 @@ import { Link, NavLink } from "react-router";
 import MyNavLink from "./MyNavlink";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useState } from "react";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
+  const { user, logOut, isPremiumUser } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -52,24 +50,6 @@ const Navbar = () => {
         console.log(error);
       });
   };
-
-  // Fetch user data from MongoDB
-  const { data: userData = null } = useQuery({
-    queryKey: ["userData", user?.email],
-    queryFn: async () => {
-      if (!user?.email) return null;
-
-      const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/users/${user.email}`
-      );
-      return result.data;
-    },
-    enabled: !!user?.email,
-  });
-
-  // Check if user is premium
-  const isPremiumUser =
-    userData?.email === user?.email && userData?.isPremium === true;
 
   return (
     <nav className={`border-b border-gray-200 bg-[#f9f5f6]`}>
@@ -158,7 +138,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/auth/register"
-                  className="px-6 py-2.5 text-sm font-semibold text-black rounded transition-all relative"
+                  className="px-6 py-2.5 text-sm font-semibold text-black bg-[#ffdb58] border-2 border-black transition-all duration-400 hover:translate-x-1 hover:translate-y-1"
                   style={{
                     backgroundColor: "#ffdb58",
                     boxShadow: "4px 4px 0px 0px #000",

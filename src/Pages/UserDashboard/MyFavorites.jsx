@@ -19,10 +19,16 @@ const MyFavorites = () => {
     "Mindset",
     "Mistakes Learned",
   ];
-  const emotionalTones = ["All", "Motivational", "Sad", "Realization", "Gratitude"];
+  const emotionalTones = [
+    "All",
+    "Motivational",
+    "Sad",
+    "Realization",
+    "Gratitude",
+  ];
 
   // Fetch favorites
-  const { data: favorites, isLoading, refetch } = useQuery({
+  const { data: favorites, refetch } = useQuery({
     queryKey: ["my-favorites", user?.email],
     queryFn: async () => {
       const result = await axios.get(
@@ -37,7 +43,9 @@ const MyFavorites = () => {
   const { mutateAsync: removeFromFavorites } = useMutation({
     mutationFn: async (lessonId) =>
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/favorites/${lessonId}?userEmail=${user.email}`
+        `${import.meta.env.VITE_API_URL}/favorites/${lessonId}?userEmail=${
+          user.email
+        }`
       ),
     onSuccess: () => {
       toast.success("Removed from favorites!");
@@ -78,23 +86,11 @@ const MyFavorites = () => {
 
   // Filter favorites
   const filteredFavorites = favorites?.filter((fav) => {
-    const matchesCategory = categoryFilter === "All" || fav.lessonCategory === categoryFilter;
+    const matchesCategory =
+      categoryFilter === "All" || fav.lessonCategory === categoryFilter;
     const matchesTone = toneFilter === "All" || fav.lessonTone === toneFilter;
     return matchesCategory && matchesTone;
   });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold text-gray-700">
-            Loading favorites...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#f9f5f6] py-8 px-4">

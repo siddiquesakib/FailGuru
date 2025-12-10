@@ -2,7 +2,6 @@ import React from "react";
 import Container from "../../Component/Shared/Container";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
 const Pricing = () => {
@@ -40,7 +39,7 @@ const Pricing = () => {
     },
   ];
 
-  const { user } = useAuth();
+  const { user, isPremiumUser, refetchUserData } = useAuth();
   const navigate = useNavigate();
 
   const handlePayment = async () => {
@@ -57,23 +56,6 @@ const Pricing = () => {
     window.location.href = data.url;
   };
 
-  // Fetch user data from MongoDB
-  const { data: userData = null, refetch } = useQuery({
-    queryKey: ["userData", user?.email],
-    queryFn: async () => {
-      if (!user?.email) return null;
-
-      const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/users/${user.email}`
-      );
-      return result.data;
-    },
-    enabled: !!user?.email,
-  });
-
-  const isPremium =
-    userData?.email === user?.email && userData?.isPremium === true;
-
   //cancle premium
   const handleCancel = async () => {
     try {
@@ -82,7 +64,7 @@ const Pricing = () => {
       );
       console.log("Premium update :", response.data);
       // Refetch user data to update UI
-      refetch();
+      refetchUserData();
       navigate("/payment-cancle");
     } catch (error) {
       console.error("Failed to update premium status:", error);
@@ -92,7 +74,7 @@ const Pricing = () => {
   return (
     <div className=" py-1 px-4 min-h-[calc(100vh-250px)] bg-[#f9f5f6]">
       <div className="my-20">
-        {isPremium ? (
+        {isPremiumUser ? (
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-5xl md:w-5xl mx-auto font-black mb-4 font2">
               You're officially a lifetime Premium member.
@@ -135,15 +117,15 @@ const Pricing = () => {
                   style={{ boxShadow: "8px 8px 0px 0px #000" }}
                 >
                   <div>
-                    <h2 className="text-4xl font-black mb-3 ">
-                      {plan.name}
-                    </h2>
+                    <h2 className="text-4xl font-black mb-3 ">{plan.name}</h2>
                     <p className="text-base mb-8 leading-relaxed">
                       {plan.description}
                     </p>
 
                     <div className="mb-8">
-                      <span className="text-4xl font-black font2">{plan.price}</span>
+                      <span className="text-4xl font-black font2">
+                        {plan.price}
+                      </span>
                       {plan.name === "PREMIUM" ? (
                         <span className="text-xl font-semibold">
                           ৳ Lifetime

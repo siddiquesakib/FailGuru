@@ -6,12 +6,11 @@ import Container from "../../Component/Shared/Container";
 import useAuth from "../../hooks/useAuth";
 
 const PublicLessons = () => {
-  const { user } = useAuth();
+  const { isPremiumUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTone, setSelectedTone] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  // const  [userData, setUserData] = useState(null);
 
   const { data: lessons = [], isLoading } = useQuery({
     queryKey: ["lessons", searchTerm, selectedCategory, selectedTone, sortBy],
@@ -25,24 +24,6 @@ const PublicLessons = () => {
     },
   });
 
-  // Fetch user data from MongoDB
-  const { data: userData = null } = useQuery({
-    queryKey: ["userData", user?.email],
-    queryFn: async () => {
-      if (!user?.email) return null;
-
-      const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/users/${user.email}`
-      );
-      return result.data;
-    },
-    enabled: !!user?.email,
-  });
-
-  // Check if user is premium
-  const isPremiumUser =
-    userData?.email === user?.email && userData?.isPremium === true;
-
   const categories = [
     "Personal Growth",
     "Career",
@@ -51,10 +32,6 @@ const PublicLessons = () => {
     "Mistakes Learned",
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
-
-  console.log("Auth User Email:", user?.email);
-  console.log("DB User Data:", userData);
-  console.log("Is Premium:", isPremiumUser);
 
   if (isLoading) {
     return (

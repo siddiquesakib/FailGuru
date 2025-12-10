@@ -10,10 +10,29 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Fetch user data from MongoDB
+  const { data: userData = null, refetch: refetchUserData } = useQuery({
+    queryKey: ["userData", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_URL}/users/${user.email}`
+      );
+      return result.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Check if user is premium
+  const isPremiumUser =
+    userData?.email === user?.email && userData?.isPremium === true;
 
   const createUser = (email, password) => {
     setLoading(true);
@@ -61,6 +80,9 @@ const AuthProvider = ({ children }) => {
     signIn,
     updateUser,
     logOut,
+    userData,
+    isPremiumUser,
+    refetchUserData,
   };
 
   return <AuthContext value={authInfo}>{children}</AuthContext>;

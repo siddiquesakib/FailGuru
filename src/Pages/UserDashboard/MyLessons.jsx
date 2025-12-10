@@ -9,9 +9,7 @@ import { imageUpload } from "../../Utils";
 import { toast } from "react-toastify";
 
 const MyLessons = () => {
-  const { user } = useAuth();
-  console.log("User:", user);
-  const [myLessons, setMyLessons] = useState([]);
+  const { user, isPremiumUser } = useAuth();
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -24,41 +22,6 @@ const MyLessons = () => {
     setValue,
   } = useForm();
 
-  // Check if user is premium
-  const isPremium = false;
-
-  // Dummy lessons data - replace with API call filtered by user email
-  const [lessons, setLessons] = useState([
-    {
-      _id: "1",
-      title: "Embracing Failure as Growth",
-      category: "Personal Growth",
-      emotionalTone: "Motivational",
-      privacy: "Public",
-      accessLevel: "Free",
-      createdDate: "2025-01-15T10:30:00Z",
-      likesCount: 1234,
-      favoritesCount: 342,
-      description: "Learning to see failures not as setbacks...",
-      image:
-        "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400",
-    },
-    {
-      _id: "2",
-      title: "The Power of Saying No",
-      category: "Mindset",
-      emotionalTone: "Realization",
-      privacy: "Private",
-      accessLevel: "Premium",
-      createdDate: "2025-01-10T14:20:00Z",
-      likesCount: 2456,
-      favoritesCount: 678,
-      description: "Understanding that saying no to others...",
-      image:
-        "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400",
-    },
-  ]);
-
   const categories = [
     "Personal Growth",
     "Career",
@@ -70,19 +33,18 @@ const MyLessons = () => {
 
   //fetch lessons
   const {
-    data: mylessons,
+    data: lessons = [],
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["my-lessons", user?.id],
+    queryKey: ["my-lessons", user?.email],
     queryFn: async () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_URL}/my-lessons?email=${user.email}`
       );
-
-      setLessons(result.data);
       return result.data;
     },
+    enabled: !!user?.email,
   });
 
   //delete lesson
@@ -109,10 +71,7 @@ const MyLessons = () => {
             }
             return res.json();
           })
-          .then((data) => {
-            // Remove deleted lesson from state
-            setMyLessons(myLessons.filter((lesson) => lesson._id !== id));
-
+          .then(() => {
             Swal.fire({
               title: "Deleted!",
               text: "Your lesson has been deleted.",
@@ -203,19 +162,23 @@ const MyLessons = () => {
     }
   };
 
-  const toggleAccessLevel = (lessonId, currentLevel) => {
-    if (!isPremium) {
-      alert("Upgrade to Premium to change access level");
+  const toggleAccessLevel = async (lessonId, currentLevel) => {
+    if (!isPremiumUser) {
+      toast.error("Upgrade to Premium to change access level");
       return;
     }
     const newLevel = currentLevel === "Free" ? "Premium" : "Free";
-    setLessons(
-      lessons.map((l) =>
-        l._id === lessonId ? { ...l, accessLevel: newLevel } : l
-      )
-    );
-    console.log("Access level toggled:", lessonId, newLevel);
-    // Add axios patch request here
+    try {
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/my-lessons/${lessonId}`,
+        { accessLevel: newLevel }
+      );
+      toast.success(`Access level changed to ${newLevel}`);
+      refetch();
+    } catch (error) {
+      console.error("Error toggling access level:", error);
+      toast.error("Failed to change access level");
+    }
   };
 
   if (isLoading) {
@@ -255,10 +218,7 @@ const MyLessons = () => {
                   <th className="px-4 py-3 text-left text-sm font-black">
                     Category
                   </th>
-                 
-                  <th className="px-4 py-3 text-left text-sm font-black">
-                    Access
-                  </th>
+
                   <th className="px-4 py-3 text-left text-sm font-black">
                     Stats
                   </th>
@@ -271,7 +231,7 @@ const MyLessons = () => {
                 </tr>
               </thead>
               <tbody>
-                {mylessons.map((lesson) => (
+                {lessons.map((lesson) => (
                   <tr
                     key={lesson._id}
                     className="border-b-2 border-gray-200 hover:bg-gray-50"
@@ -286,22 +246,6 @@ const MyLessons = () => {
                       <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">
                         {lesson.category}
                       </span>
-                    </td>
-                 
-                    <td className="px-4 py-4">
-                      <button
-                        onClick={() =>
-                          toggleAccessLevel(lesson._id, lesson.accessLevel)
-                        }
-                        disabled={!isPremium}
-                        className={`px-3 py-1 text-xs font-bold rounded-full border-2 ${
-                          lesson.accessLevel === "Premium"
-                            ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-                            : "bg-blue-100 text-blue-700 border-blue-300"
-                        } ${!isPremium ? "opacity-50 cursor-not-allowed" : ""}`}
-                      >
-                        {lesson.accessLevel}
-                      </button>
                     </td>
                     <td className="px-4 py-4">
                       <p className="text-xs text-gray-600">
@@ -360,9 +304,9 @@ const MyLessons = () => {
 
       {/* Update Modal */}
       {showUpdateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-  bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div
-            className="bg-white rounded-lg border-4 border-black p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg border-2 border-black p-6 max-w-2xl w-full max-h-[95vh] overflow-y-auto"
             style={{ boxShadow: "8px 8px 0px 0px #000" }}
           >
             <h2 className="text-3xl font-black mb-6">Update Lesson</h2>
@@ -516,13 +460,13 @@ const MyLessons = () => {
                     {...register("accessLevel", {
                       required: "Access level is required",
                     })}
-                    disabled={!isPremium}
+                    disabled={!isPremiumUser}
                     className={`w-full px-4 py-2 border-2 border-gray-300 rounded-lg ${
-                      !isPremium ? "bg-gray-100" : ""
+                      !isPremiumUser ? "bg-gray-100" : ""
                     }`}
                   >
                     <option value="Free">Free</option>
-                    <option value="Premium" disabled={!isPremium}>
+                    <option value="Premium" disabled={!isPremiumUser}>
                       Premium
                     </option>
                   </select>
