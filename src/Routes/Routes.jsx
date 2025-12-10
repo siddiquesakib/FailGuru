@@ -17,6 +17,11 @@ import PaymentCancle from "../Pages/Payment/PaymentCancle";
 import Error from "../Pages/Error/Error";
 import UserDashboard from "../Pages/UserDashboard/UserDashboard";
 import MyFavorites from "../Pages/UserDashboard/MyFavorites";
+import ReportedLessons from "../Pages/Admin/ReportedLessons";
+import ManageLessons from "../Pages/Admin/ManageLessons";
+import ManageUsers from "../Pages/Admin/ManageUsers";
+import AdminDashboard from "../Pages/Admin/AdminDashboard";
+import AdminRoute from "./AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -110,6 +115,38 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <MyFavorites />
           </PrivateRoute>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-lessons",
+        element: (
+          <AdminRoute>
+            <ManageLessons />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "reported-lessons",
+        element: (
+          <AdminRoute>
+            <ReportedLessons />
+          </AdminRoute>
         ),
       },
     ],
