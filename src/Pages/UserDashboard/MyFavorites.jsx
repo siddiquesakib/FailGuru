@@ -28,7 +28,12 @@ const MyFavorites = () => {
   ];
 
   // Fetch favorites
-  const { data: favorites, refetch } = useQuery({
+  const {
+    data: favorites,
+    refetch,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["my-favorites", user?.email],
     queryFn: async () => {
       const result = await axios.get(
@@ -36,7 +41,7 @@ const MyFavorites = () => {
       );
       return result.data;
     },
-    enabled: !!user,
+    enabled: !!user?.email, // user.email check kora better
   });
 
   // Remove from favorites mutation
@@ -52,6 +57,9 @@ const MyFavorites = () => {
       refetch();
     },
   });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading favorites</div>;
 
   // Handle remove favorite with confirmation
   const handleRemoveFavorite = (lessonId, lessonTitle) => {
