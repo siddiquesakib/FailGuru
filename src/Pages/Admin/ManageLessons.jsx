@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
 import { Link } from "react-router";
@@ -9,11 +9,7 @@ const ManageLessons = () => {
   const { data: lessons = [], refetch } = useQuery({
     queryKey: ["lessons"],
     queryFn: async () => {
-      const params = new URLSearchParams();
-
-      const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessons?${params.toString()}`
-      );
+      const result = await axios.get(`${import.meta.env.VITE_API_URL}/lessons`);
       return result.data;
     },
   });
@@ -64,6 +60,16 @@ const ManageLessons = () => {
     });
   };
 
+  //togle feature
+  const toggleFeatured = async (lessonId) => {
+    await axios.patch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/admin/lesson/isFeatured/toggle/${lessonId}`
+    );
+    refetch();
+  };
+
   return (
     <div>
       {/* Table */}
@@ -102,7 +108,10 @@ const ManageLessons = () => {
                   </td>
 
                   <td className="px-4 py-4">
-                    <button className="px-2 py-3 bg-purple-100 text-purple-700 text-xs font-medium border-2 rounded-xl btn btn-xs">
+                    <button
+                      onClick={() => toggleFeatured(lesson._id)}
+                      className="px-2 py-3 bg-purple-100 text-purple-700 text-xs font-medium border-2 rounded-xl btn btn-xs"
+                    >
                       {lesson.isFeatured ? "Featured" : "Not Featured"}
                     </button>
                   </td>
