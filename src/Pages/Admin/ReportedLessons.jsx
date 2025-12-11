@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { Link } from "react-router";
 
 const ReportedLessons = () => {
-  const [selectedReport, setSelectedReport] = useState(null);
-
   // Fetch all reports
   const { data: reports = [], refetch } = useQuery({
     queryKey: ["reports"],
@@ -165,12 +164,12 @@ const ReportedLessons = () => {
                       {/* View */}
                       <td className="">
                         <div className="flex gap-2 justify-center flex-wrap">
-                          <button
-                            onClick={() => setSelectedReport(report)}
+                          <Link
+                            to={`/publiclessons/${report.lessonId}`}
                             className="px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded hover:bg-blue-600 transition-colors"
                           >
                             View
-                          </button>
+                          </Link>
                         </div>
                       </td>
                       <td className="px-4 py-4">

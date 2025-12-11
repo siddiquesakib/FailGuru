@@ -262,15 +262,14 @@ const AddLesson = () => {
               </label>
               <div className="relative">
                 <select
-                  name="accessLevel"
+                  {...register("accessLevel", { required: "accessLevel need" })}
                   disabled={!isPremium}
                   className={`w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
                     !isPremium ? "bg-gray-100 cursor-not-allowed" : ""
                   }`}
-                  required
                 >
-                  <option value="Free">Free</option>
-                  <option value="Premium" disabled={!isPremium}>
+                  <option value="free">Free</option>
+                  <option value="premium" disabled={!isPremium}>
                     Premium
                   </option>
                 </select>
@@ -281,6 +280,11 @@ const AddLesson = () => {
                       Premium
                     </Link>{" "}
                     to create paid lessons
+                  </p>
+                )}
+                {errors.accessLevel && (
+                  <p className="text-red-600 text-xs">
+                    {errors.accessLevel.message}
                   </p>
                 )}
               </div>

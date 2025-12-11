@@ -34,25 +34,12 @@ const PublicLessons = () => {
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold text-gray-700">
-            Loading lessons...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <Container className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="my-15">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2 font2">
+          <h1 className="text-4xl font-black mb-2 uppercase">
             Public Life Lessons
           </h1>
           <p className="text-gray-600 text-lg">
@@ -62,7 +49,7 @@ const PublicLessons = () => {
 
         {/* Search and Filters */}
         <div
-          className="bg-white  border-3 border-black p-6 mb-8"
+          className="bg-white border-3 border-black p-6 mb-8"
           style={{ boxShadow: "6px 6px 0px 0px #000" }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -146,130 +133,102 @@ const PublicLessons = () => {
           lessons
         </p>
 
-        {/* Lessons Grid */}
+        {/* All Lessons */}
+        {/* Lessons Grid - 3 Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => (
             <div
               key={lesson._id}
-              className={`bg-white border-3 rounded-2xl border-black overflow-hidden transition-all duration-300  ${
+              className={`bg-white border-3 border-black rounded-xl p-6 transition-all duration-300 flex flex-col h-full ${
                 lesson.accessLevel?.toLowerCase() === "premium" &&
                 !isPremiumUser
-                  ? "opacity-75 relative"
+                  ? "opacity-75"
                   : ""
               }`}
               style={{ boxShadow: "4px 4px 0px 0px #000" }}
             >
-              {/* Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={lesson.image}
-                  alt={lesson.title}
-                  className={`w-full h-full object-cover ${
-                    lesson.accessLevel?.toLowerCase() === "premium" &&
-                    !isPremiumUser
-                      ? "blur-sm"
-                      : ""
-                  }`}
-                />
-                {lesson.accessLevel?.toLowerCase() === "premium" &&
-                  !isPremiumUser && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <div className="text-center text-white">
-                        <svg
-                          className="w-12 h-12 mx-auto mb-2"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <p className="font-bold text-sm">Premium Lesson</p>
-                      </div>
-                    </div>
-                  )}
-                {/* Access Level Badge */}
-                <div
-                  className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${
+              {/* Access Level Badge at Top */}
+              <div className="flex justify-between items-start mb-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold ${
                     lesson.accessLevel?.toLowerCase() === "premium"
-                      ? "bg-yellow-400 text-black border-2 border-black"
-                      : "bg-green-400 text-black border-2 border-black"
+                      ? "bg-yellow-400 text-black"
+                      : "bg-green-400 text-black"
                   }`}
                 >
                   {lesson.accessLevel?.toLowerCase() === "premium"
                     ? "Premium"
                     : "Free"}
+                </span>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <span>❤️ {lesson.likesCount || 0}</span>
+                  <span>🔖 {lesson.favoritesCount || 0}</span>
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="p-5">
-                <h3
-                  className={`text-xl font-bold mb-2 ${
-                    lesson.accessLevel?.toLowerCase() === "premium" &&
-                    !isPremiumUser
-                      ? "blur-sm"
-                      : ""
-                  }`}
-                >
-                  {lesson.title}
-                </h3>
+              {/* Title */}
+              <h3
+                className={`text-xl font-bold mb-3 flex-grow ${
+                  lesson.accessLevel?.toLowerCase() === "premium" &&
+                  !isPremiumUser
+                    ? "blur-sm"
+                    : ""
+                }`}
+              >
+                {lesson.title}
+              </h3>
 
-                <p
-                  className={`text-gray-600 text-sm mb-4 line-clamp-2 ${
-                    lesson.accessLevel?.toLowerCase() === "premium" &&
-                    !isPremiumUser
-                      ? "blur-sm"
-                      : ""
-                  }`}
-                >
-                  {lesson.description}
-                </p>
+              {/* Description */}
+              <p
+                className={`text-gray-600 text-sm mb-4 line-clamp-3 flex-grow ${
+                  lesson.accessLevel?.toLowerCase() === "premium" &&
+                  !isPremiumUser
+                    ? "blur-sm"
+                    : ""
+                }`}
+              >
+                {lesson.description}
+              </p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                    {lesson.category}
-                  </span>
-                  <span className="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-semibold rounded-full">
-                    {lesson.emotionalTone}
-                  </span>
+              {/* Category */}
+              <div className="mb-2">
+                <span className="text-xs font-semibold text-gray-500">
+                  Category:{" "}
+                </span>
+                <span className="text-sm font-medium text-gray-800">
+                  {lesson.category}
+                </span>
+              </div>
+
+              {/* Emotional Tone */}
+              <div className="mb-6">
+                <span className="text-xs font-semibold text-gray-500">
+                  Emotional Tone:{" "}
+                </span>
+                <span className="text-sm font-medium text-gray-800">
+                  {lesson.emotionalTone}
+                </span>
+              </div>
+
+              {/* Creator Info */}
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+                <img
+                  src={lesson.creatorPhoto || "https://i.pravatar.cc/150?img=1"}
+                  alt={lesson.creatorName}
+                  className="w-10 h-10 rounded-full border-2 border-gray-300"
+                />
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">
+                    {lesson.creatorName}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(lesson.createdDate).toLocaleDateString()}
+                  </p>
                 </div>
+              </div>
 
-                {/* Creator Info */}
-                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
-                  <img
-                    src={
-                      lesson.creatorPhoto || "https://i.pravatar.cc/150?img=1"
-                    }
-                    alt={lesson.creatorName}
-                    className="w-10 h-10 rounded-full border-2 border-gray-300"
-                  />
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800">
-                      {lesson.creatorName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(lesson.createdDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      ❤️ {lesson.likesCount || 0}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      🔖 {lesson.favoritesCount || 0}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Action Button */}
+              {/* ✅ Button pushed to absolute bottom */}
+              <div className="mt-auto">
                 {lesson.accessLevel?.toLowerCase() === "premium" &&
                 !isPremiumUser ? (
                   <Link
@@ -282,7 +241,7 @@ const PublicLessons = () => {
                 ) : (
                   <Link
                     to={`/publiclessons/${lesson._id}`}
-                    className="block w-full bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-3 rounded-xl border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
+                    className="block w-full bg-[#ffdb58] text-black font-semibold py-3 text-center border-3 rounded-xl border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
                     style={{
                       border: "3px solid #000",
                       boxShadow: "4px 4px 0px 0px #000",

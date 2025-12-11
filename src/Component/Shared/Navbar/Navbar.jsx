@@ -95,6 +95,7 @@ const Navbar = () => {
                   style={{ boxShadow: "4px 4px 0px 0px #000" }}
                 >
                   <div className="py-2">
+                    <h1 className="font-bold px-1 bg-purple-50" >{user.displayName}</h1>
                     <Link
                       to="/dashboard"
                       onClick={closeMobileMenu}
