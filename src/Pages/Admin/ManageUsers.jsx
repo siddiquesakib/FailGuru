@@ -2,11 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
 import { Link } from "react-router";
-import useAuth from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const ManageUsers = () => {
-  const { user } = useAuth();
-
   //fetch all users
   const { data: users = [], refetch } = useQuery({
     queryKey: ["user"],
@@ -20,6 +18,7 @@ const ManageUsers = () => {
     },
   });
 
+
   // console.log(users);
 
   const handleUsertoAdmin = async (temail) => {
@@ -27,7 +26,8 @@ const ManageUsers = () => {
       const res = await axios.patch(
         `${import.meta.env.VITE_API_URL}/users/update/admin/${temail}`
       );
-      refetch(); // ✅ Refetch users list
+      refetch();
+      toast.success(`${`${temail} are admin now`}`)
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -68,8 +68,8 @@ const ManageUsers = () => {
                   </td>
                   <td className="px-4 py-4">
                     <button
-                      onClick={() => handleUsertoAdmin(lesson.email)} // ✅ CORRECT!
-                      className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full"
+                      onClick={() => handleUsertoAdmin(lesson.email)}
+                      className="px-2 py-3 bg-purple-100 text-purple-700 text-xs font-medium border-2 rounded-xl btn btn-xs"
                     >
                       {lesson.role}
                     </button>

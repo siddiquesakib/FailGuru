@@ -37,16 +37,22 @@ const AddLesson = () => {
       category,
       image,
     } = data;
-    const imgFile = image[0];
+    const imgFile = image?.[0];
 
     try {
-      const imgUrl = await imageUpload(imgFile);
+      let imgUrl = null;
+      if (imgFile) {
+        imgUrl = await imageUpload(imgFile);
+      }
+
       const LessonData = {
         title,
         description,
         category,
         emotionalTone,
-        image: imgUrl,
+        image:
+          imgUrl ||
+          "https://i.pinimg.com/736x/4b/12/b4/4b12b4454feccf75c0cee96d5425ec2a.jpg",
         privacy,
         accessLevel,
         creatorName: user.displayName,
@@ -55,6 +61,7 @@ const AddLesson = () => {
         createdDate: new Date().toISOString(),
         updatedDate: new Date().toISOString(),
         visibility,
+        isFeatured: false,
         likesCount: 0,
         favoritesCount: 0,
         likes: [],
@@ -220,9 +227,7 @@ const AddLesson = () => {
               accept="image/*"
               placeholder="https://example.com/image.jpg"
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              {...register("image", {
-                required: "image lagbe",
-              })}
+              {...register("image")}
             />
             {errors.image && (
               <p className="text-red-600 text-xs">{errors.image.message}</p>
