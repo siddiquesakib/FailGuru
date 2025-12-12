@@ -52,7 +52,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`border-b border-gray-200 bg-[#f9f5f6]`}>
+    <nav className={`border-b border-gray-200 bg-[#f9f5f6] bg-[url(/bgimg.png)] top-0 z-50 sticky`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -95,7 +95,9 @@ const Navbar = () => {
                   style={{ boxShadow: "4px 4px 0px 0px #000" }}
                 >
                   <div className="py-2">
-                    <h1 className="font-bold px-1 bg-purple-50" >{user.displayName}</h1>
+                    <h1 className="font-bold px-1 bg-purple-50">
+                      {user.displayName}
+                    </h1>
                     <Link
                       to="/dashboard"
                       onClick={closeMobileMenu}
@@ -139,18 +141,18 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/auth/register"
-                  className="px-6 py-2.5 text-sm font-semibold text-black bg-[#ffdb58] border-2 border-black transition-all duration-400 hover:translate-x-1 hover:translate-y-1"
+                  className=" px-4 py-2.5 text-sm font-bold text-black bg-[#ffdb58] border-2 border-black transition-all duration-400 hover:translate-x-1 hover:translate-y-1"
                   style={{
                     backgroundColor: "#ffdb58",
-                    boxShadow: "4px 4px 0px 0px #000",
+                    boxShadow: "2px 2px 0px 0px #000",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
-                    e.currentTarget.style.transform = "translate(2px, 2px)";
+                    e.currentTarget.style.transform = "translate(-2px, -2px)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
-                    e.currentTarget.style.transform = "translate(0, 0)";
+                    e.currentTarget.style.transform = "translate(2px, 2px)";
                   }}
                 >
                   Register
