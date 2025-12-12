@@ -1,4 +1,11 @@
 import React from "react";
+import Heading from "../Shared/Heading";
+import Paragraph from "../Shared/Paragraph";
+import Button from "../Shared/Button";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import Container from "../Shared/Container";
+import { Autoplay } from "swiper/modules";
 
 const Reviews = () => {
   const reviews = [
@@ -26,26 +33,68 @@ const Reviews = () => {
       text: "Premium content is worth every penny. Highly recommend!",
       photo: "https://i.pravatar.cc/150?img=4",
     },
+    {
+      name: "Sarah Johnson",
+      stars: 5,
+      text: "Life-changing lessons! Completely transformed my mindset.",
+      photo: "https://i.pravatar.cc/150?img=1",
+    },
+    {
+      name: "Mike Chen",
+      stars: 4,
+      text: "Practical advice that actually works in real life.",
+      photo: "https://i.pravatar.cc/150?img=2",
+    },
+    {
+      name: "Emma Davis",
+      stars: 5,
+      text: "The best place to learn from others' experiences!",
+      photo: "https://i.pravatar.cc/150?img=3",
+    },
+    {
+      name: "Raj Patel",
+      stars: 5,
+      text: "Premium content is worth every penny. Highly recommend!",
+      photo: "https://i.pravatar.cc/150?img=4",
+    },
   ];
 
   return (
-    <div className="py-20 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-black mb-4">What People Are Saying</h2>
-          <p className="text-xl text-gray-600">Join 10K+ happy learners</p>
+    <div className="py-20 bg-[url(/bgimg.png)]">
+      <div className=" mx-auto ">
+        <div className="flex mx-auto">
+          <Button className="mb-6">Review</Button>
+        </div>
+        <div className="text-center mb-10">
+          <Heading>What People Are Saying</Heading>
+          <Paragraph>Join 10K+ happy learners</Paragraph>
         </div>
 
         {/* Reviews Grid - 2 cards per row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Swiper
+          slidesPerView={4}
+          grid={{ rows: 2, fill: "row" }}
+          centeredSlides={true}
+          spaceBetween={30}
+          speed={3000}
+          grabCursor={true}
+          freeMode={{
+            enabled: true,
+            momentum: false,
+          }}
+          loop={true}
+          autoplay={{
+            delay: 0,
+            disableOnInteraction: false,
+          }}
+          modules={[Autoplay]}
+        >
           {reviews.map((review, index) => (
-            <div
+            <SwiperSlide
               key={index}
-              className="bg-white border-4 border-black p-8 rounded-xl hover:-translate-y-2 transition-all duration-300"
+              className="bg-white border-4 border-black p-8 "
               style={{ boxShadow: "6px 6px 0px 0px #000" }}
             >
-              {/* Left Photo + Name + Stars */}
               <div className="flex items-start gap-4 mb-6">
                 <img
                   src={review.photo}
@@ -76,9 +125,9 @@ const Reviews = () => {
               <p className="text-gray-700 leading-relaxed text-lg line-clamp-2">
                 "{review.text}"
               </p>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
     </div>
   );

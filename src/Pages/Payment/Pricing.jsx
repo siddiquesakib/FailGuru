@@ -3,6 +3,9 @@ import Container from "../../Component/Shared/Container";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import Heading from "../../Component/Shared/Heading";
+import Paragraph from "../../Component/Shared/Paragraph";
+import Button from "../../Component/Shared/Button";
 
 const Pricing = () => {
   const pricingPlans = [
@@ -72,7 +75,7 @@ const Pricing = () => {
   };
 
   return (
-    <div className=" py-1 px-4 min-h-[calc(100vh-250px)] bg-[#f9f5f6]">
+    <div className=" py-1 px-4 min-h-[calc(100vh-250px)] bg-[url(/bgimg.png)]">
       <div className="my-20">
         {isPremiumUser ? (
           <div className="text-center mb-12">
@@ -102,30 +105,27 @@ const Pricing = () => {
         ) : (
           <>
             <div className="text-center mb-12">
-              <h1 className="text-5xl font-black mb-4 font2">
-                Choose Your Plan
-              </h1>
-              <p className="text-xl text-gray-600">
-                Select the perfect plan for your needs
-              </p>
+              <div className="flex mx-auto">
+                <Button className="mb-6">Plan</Button>
+              </div>
+              <Heading>Choose Your Plan</Heading>
+              <Paragraph>Select the perfect plan for your needs</Paragraph>
             </div>
             <div className="flex flex-col md:flex-row  justify-center gap-8 ">
               {pricingPlans.map((plan) => (
                 <div
                   key={plan.id}
-                  className={`${plan.bgColor} md:w-[450px] flex flex-col justify-between p-8  border-4 border-black transition-all duration-300 hover:shadow-[12px_12px_0px_0px_#000]`}
+                  className={`${plan.bgColor} md:w-[450px] flex flex-col justify-between p-8  border-2 border-black transition-all duration-300 hover:shadow-[12px_12px_0px_0px_#000]`}
                   style={{ boxShadow: "8px 8px 0px 0px #000" }}
                 >
                   <div>
                     <h2 className="text-4xl font-black mb-3 ">{plan.name}</h2>
-                    <p className="text-base mb-8 leading-relaxed">
+                    <Paragraph className="text-base mb-8 !text-black leading-relaxed">
                       {plan.description}
-                    </p>
+                    </Paragraph>
 
-                    <div className="mb-8">
-                      <span className="text-4xl font-black font2">
-                        {plan.price}
-                      </span>
+                    <div className="mb-8 flex items-center">
+                      <h1 className="text-[40px] font-black">{plan.price} </h1>
                       {plan.name === "PREMIUM" ? (
                         <span className="text-xl font-semibold">
                           ৳ Lifetime
@@ -136,7 +136,7 @@ const Pricing = () => {
                     </div>
 
                     <div className="mb-8">
-                      <p className="font-black text-sm mb-4">INCLUDES:</p>
+                      <p className="font-bold text-sm mb-4">INCLUDES:</p>
                       <ul className="space-y-3">
                         {plan.features.map((feature, index) => (
                           <li
@@ -144,7 +144,9 @@ const Pricing = () => {
                             className="text-base flex items-start"
                           >
                             <span className="text-xl mr-3">✱</span>
-                            <span>{feature}</span>
+                            <Paragraph className="text-black!">
+                              {feature}
+                            </Paragraph>
                           </li>
                         ))}
                       </ul>
@@ -155,18 +157,22 @@ const Pricing = () => {
                     {plan.name === "PREMIUM" ? (
                       <button
                         onClick={handlePayment}
-                        className="block w-full bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
+                        className="block w-full cursor-pointer bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
                         style={{
-                          border: "3px solid #000",
-                          boxShadow: "4px 4px 0px 0px #000",
+                          backgroundColor: "#ffdb58",
+                          boxShadow: "2px 2px 0px 0px #000",
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.boxShadow =
                             "2px 2px 0px 0px #000";
+                          e.currentTarget.style.transform =
+                            "translate(-2px, -2px)";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.boxShadow =
                             "4px 4px 0px 0px #000";
+                          e.currentTarget.style.transform =
+                            "translate(2px, 2px)";
                         }}
                       >
                         Get Premium
@@ -174,18 +180,22 @@ const Pricing = () => {
                     ) : (
                       <button
                         to="/"
-                        className="block w-full bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
+                        className="block w-full cursor-pointer bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-3 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
                         style={{
-                          border: "3px solid #000",
-                          boxShadow: "4px 4px 0px 0px #000",
+                          backgroundColor: "#ffdb58",
+                          boxShadow: "2px 2px 0px 0px #000",
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.boxShadow =
                             "2px 2px 0px 0px #000";
+                          e.currentTarget.style.transform =
+                            "translate(-2px, -2px)";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.boxShadow =
                             "4px 4px 0px 0px #000";
+                          e.currentTarget.style.transform =
+                            "translate(2px, 2px)";
                         }}
                       >
                         Get Free
