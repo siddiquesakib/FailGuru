@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 import Container from "../../Component/Shared/Container";
@@ -15,17 +15,54 @@ const PublicLessons = () => {
   const [sortBy, setSortBy] = useState("newest");
 
   //fetch all lessons
-  const { data: lessons = [], isLoading } = useQuery({
-    queryKey: ["lessons", searchTerm, selectedCategory, selectedTone, sortBy],
+  const { data: allLessons = [] } = useQuery({
+    queryKey: ["lessons"],
     queryFn: async () => {
-      const params = new URLSearchParams();
-
-      const result = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessons?${params.toString()}`
-      );
+      const result = await axios.get(`${import.meta.env.VITE_API_URL}/lessons`);
       return result.data;
     },
   });
+
+  // Client-side filtering and sorting
+  const lessons = useMemo(() => {
+    let filtered = [...allLessons];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (lesson) =>
+          lesson.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          lesson.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Category filter
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (lesson) => lesson.category === selectedCategory
+      );
+    }
+
+    // Emotional tone filter
+    if (selectedTone) {
+      filtered = filtered.filter(
+        (lesson) => lesson.emotionalTone === selectedTone
+      );
+    }
+
+    // Sort
+    if (sortBy === "newest") {
+      filtered.sort(
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+      );
+    } else if (sortBy === "mostSaved") {
+      filtered.sort(
+        (a, b) => (b.favoritesCount || 0) - (a.favoritesCount || 0)
+      );
+    }
+
+    return filtered;
+  }, [allLessons, searchTerm, selectedCategory, selectedTone, sortBy]);
 
   const categories = [
     "Personal Growth",
@@ -138,7 +175,7 @@ const PublicLessons = () => {
           {lessons.map((lesson) => (
             <div
               key={lesson._id}
-              className={`bg-white border-2 border-black   p-6 transition-all duration-300 flex flex-col h-full ${
+              className={`bg-white border-2 border-black p-6 transition-all duration-300 flex flex-col h-full ${
                 lesson.accessLevel?.toLowerCase() === "premium" &&
                 !isPremiumUser
                   ? "opacity-75"
@@ -167,7 +204,7 @@ const PublicLessons = () => {
 
               {/* Title */}
               <h3
-                className={`text-xl font-bold mb-3 flex-grow ${
+                className={`text-xl font-bold mb-3 ${
                   lesson.accessLevel?.toLowerCase() === "premium" &&
                   !isPremiumUser
                     ? "blur-sm"
@@ -226,7 +263,7 @@ const PublicLessons = () => {
                 </div>
               </div>
 
-              {/* ✅ Button pushed to absolute bottom */}
+              {/* Button pushed to absolute bottom */}
               <div className="mt-auto">
                 {lesson.accessLevel?.toLowerCase() === "premium" &&
                 !isPremiumUser ? (
