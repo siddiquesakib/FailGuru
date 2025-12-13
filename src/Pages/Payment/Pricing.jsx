@@ -75,8 +75,8 @@ const Pricing = () => {
   };
 
   return (
-    <div className="py-1 mb-10 px-4 min-h-[calc(100vh-250px)] bg-[url(/bgimg.png)]">
-      <Container className="my-20">
+    <div className="py-1  px-4 min-h-[calc(100vh-250px)] bg-[url(/bgimg.png)]">
+      <Container className="my-0">
         <div className="flex mx-auto">
           <Button className="mb-6">Plan</Button>
         </div>

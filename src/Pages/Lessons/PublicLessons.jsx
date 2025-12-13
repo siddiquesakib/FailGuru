@@ -37,10 +37,10 @@ const PublicLessons = () => {
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
 
   return (
-    <Container className="min-h-screen py-8 px-4">
-      <div className="my-15">
+    <Container className="min-h-screen py-4 sm:py-6 md:py-8 px-2 sm:px-4">
+      <div className="my-8 sm:my-12 md:my-15">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-6 md:mb-8">
           <Heading>Public Life Lessons</Heading>
           <Paragraph>
             Explore wisdom and insights shared by our community
@@ -49,8 +49,8 @@ const PublicLessons = () => {
 
         {/* Search and Filters */}
         <div
-          className="bg-white border-2 border-black p-6 mb-8"
-          style={{ boxShadow: "6px 6px 0px 0px #000" }}
+          className="bg-white border-2 border-black p-4 sm:p-6 mb-6 sm:mb-8"
+          style={{ boxShadow: "4px 4px 0px 0px #000" }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
@@ -98,14 +98,14 @@ const PublicLessons = () => {
           </div>
 
           {/* Sort */}
-          <div className="mt-4 flex items-center gap-4">
-            <span className="text-sm font-semibold text-gray-700">
+          <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm font-semibold text-gray-700">
               Sort by:
             </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setSortBy("newest")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "newest"
                     ? "bg-purple-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -115,7 +115,7 @@ const PublicLessons = () => {
               </button>
               <button
                 onClick={() => setSortBy("mostSaved")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "mostSaved"
                     ? "bg-purple-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -128,7 +128,7 @@ const PublicLessons = () => {
         </div>
 
         {/* Results Count */}
-        <p className="text-gray-600 mb-4">
+        <p className="text-sm sm:text-base text-gray-600 mb-4">
           Showing <span className="font-semibold">{lessons.length}</span>{" "}
           lessons
         </p>

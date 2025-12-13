@@ -5,13 +5,13 @@ const Footer = () => {
   return (
     <footer className="bg-[#daf5f0] border-t-2 border-black">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6 sm:pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* Logo & Description Section */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 sm:col-span-2 md:col-span-1">
             <Link
               to="/"
-              className="text-3xl font-black font2 inline-block px-4 py-2 rounded"
+              className="text-2xl sm:text-3xl font-black font2 inline-block px-3 sm:px-4 py-2 rounded w-fit"
               style={{
                 color: "#000",
                 backgroundColor: "#ffdb58",
@@ -21,7 +21,7 @@ const Footer = () => {
             >
               Fail Guru
             </Link>
-            <p className="text-gray-700 text-sm font-medium">
+            <p className="text-gray-700 text-xs sm:text-sm font-medium">
               Learn from failures, grow through experiences. Share your life
               lessons and inspire others on their journey.
             </p>

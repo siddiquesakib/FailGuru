@@ -8,7 +8,7 @@ const HomeLayouts = () => {
   return (
     <div className="min-h-screen bg-[url(/bgimg.png)]">
       <Navbar />
-      <main className="pt-0">
+      <main>
         <ScrollProgress />
         <Outlet />
       </main>

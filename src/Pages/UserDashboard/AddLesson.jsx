@@ -102,12 +102,14 @@ const AddLesson = () => {
     userData?.email === user?.email && userData?.isPremium === true;
 
   return (
-    <div className="min-h-screen bg-[#f9f5f6] py-8 my-10 px-4">
+    <div className="min-h-screen bg-[#f9f5f6] py-4 sm:py-6 md:py-8 my-4 sm:my-6 md:my-10 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2 font2">Add New Lesson</h1>
-          <p className="text-gray-600">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 font2">
+            Add New Lesson
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Share your wisdom and life experiences with the community
           </p>
         </div>
@@ -115,8 +117,8 @@ const AddLesson = () => {
         {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white  border-2 border-black p-8"
-          style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          className="bg-white border-2 border-black p-4 sm:p-6 md:p-8"
+          style={{ boxShadow: "4px 4px 0px 0px #000" }}
         >
           {/* Lesson Title */}
           <div className="mb-6">

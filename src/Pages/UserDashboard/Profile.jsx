@@ -35,14 +35,14 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f5f6] py-8 px-4">
+    <div className="min-h-screen bg-[#f9f5f6] py-4 sm:py-6 md:py-8 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Profile Header Card */}
         <div
-          className="bg-white rounded-lg border-2 border-black p-8"
-          style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          className="bg-white  border-2 border-black p-4 sm:p-6 md:p-8"
+          style={{ boxShadow: "4px 4px 0px 0px #000" }}
         >
-          <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 md:gap-8">
             {/* Profile Photo */}
             <div className="relative">
               {isEditMode ? (
@@ -50,14 +50,14 @@ const Profile = () => {
                   <img
                     src={editedPhoto || user?.photoURL}
                     alt={user?.displayName}
-                    className="w-40 h-40 rounded-full border-2 border-[#ffdb58] object-cover"
+                    className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full border-2 border-[#ffdb58] object-cover"
                   />
                   <input
                     type="text"
                     value={editedPhoto}
                     onChange={(e) => setEditedPhoto(e.target.value)}
                     placeholder="Photo URL"
-                    className="mt-3 w-full px-3 py-2 border-2 border-black rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffdb58]"
+                    className="mt-3 w-full px-3 py-2 border-2 border-black  text-sm focus:outline-none focus:ring-2 focus:ring-[#ffdb58]"
                   />
                 </div>
               ) : (
@@ -65,7 +65,7 @@ const Profile = () => {
                   <img
                     src={user?.photoURL}
                     alt={user?.displayName}
-                    className="w-40 h-40 rounded-full border-2 border-[#ffdb58] object-cover"
+                    className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full border-2 border-[#ffdb58] object-cover"
                   />
                   {isPremiumUser && (
                     <span className="absolute -top-2 -right-2 bg-[#ffdb58] text-black text-xs font-bold px-2 py-1 rounded-full border-2 border-black">
@@ -87,7 +87,7 @@ const Profile = () => {
                     type="text"
                     value={editedName}
                     onChange={(e) => setEditedName(e.target.value)}
-                    className="w-full max-w-md px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffdb58]"
+                    className="w-full max-w-md px-4 py-3 border-2 border-black  focus:outline-none focus:ring-2 focus:ring-[#ffdb58]"
                   />
                 </div>
               ) : (
@@ -114,7 +114,7 @@ const Profile = () => {
                   <>
                     <button
                       onClick={handleEditProfile}
-                      className="px-6 py-3 bg-green-500 text-white font-bold rounded-lg border-2 border-black transition-all relative"
+                      className="px-6 py-3 bg-green-500 text-white font-bold  border-2 border-black transition-all relative"
                       style={{ boxShadow: "4px 4px 0px 0px #000" }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow =
@@ -129,7 +129,7 @@ const Profile = () => {
                     </button>
                     <button
                       onClick={handleCancelEdit}
-                      className="px-6 py-3 bg-gray-300 text-gray-700 font-bold rounded-lg border-2 border-black transition-all relative"
+                      className="px-6 py-3 bg-gray-300 text-gray-700 font-bold  border-2 border-black transition-all relative"
                       style={{ boxShadow: "4px 4px 0px 0px #000" }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow =
@@ -146,7 +146,7 @@ const Profile = () => {
                 ) : (
                   <button
                     onClick={handleEditProfile}
-                    className="px-6 py-3 bg-[#ffdb58] text-black font-bold rounded-lg border-2 border-black transition-all relative"
+                    className="px-6 py-3 bg-[#ffdb58] text-black font-bold  border-2 border-black transition-all relative"
                     style={{ boxShadow: "4px 4px 0px 0px #000" }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
@@ -168,7 +168,7 @@ const Profile = () => {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/dashboard/add-lesson"
-                className="px-6 py-3 bg-[#ffdb58] text-black font-bold rounded-lg border-2 border-black transition-all relative"
+                className="px-6 py-3 bg-[#ffdb58] text-black font-bold  border-2 border-black transition-all relative"
                 style={{ boxShadow: "4px 4px 0px 0px #000" }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
@@ -181,7 +181,7 @@ const Profile = () => {
               </Link>
               <Link
                 to="/dashboard/my-lesson"
-                className="px-6 py-3 bg-white text-black font-bold rounded-lg border-2 border-black transition-all relative"
+                className="px-6 py-3 bg-white text-black font-bold  border-2 border-black transition-all relative"
                 style={{ boxShadow: "4px 4px 0px 0px #000" }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
@@ -194,7 +194,7 @@ const Profile = () => {
               </Link>
               <Link
                 to="/dashboard/my-favorite"
-                className="px-6 py-3 bg-white text-black font-bold rounded-lg border-2 border-black transition-all relative"
+                className="px-6 py-3 bg-white text-black font-bold  border-2 border-black transition-all relative"
                 style={{ boxShadow: "4px 4px 0px 0px #000" }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
@@ -208,7 +208,7 @@ const Profile = () => {
               {!isPremiumUser && (
                 <Link
                   to="/pricing"
-                  className="px-6 py-3 bg-orange-400 text-black font-bold rounded-lg border-2 border-black transition-all relative"
+                  className="px-6 py-3 bg-orange-400 text-black font-bold  border-2 border-black transition-all relative"
                   style={{ boxShadow: "4px 4px 0px 0px #000" }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";

@@ -22,15 +22,15 @@ const WhyLearningMatters = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[url(/bgimg.png)] py-16 px-4">
+    <div className="min-h-screen bg-[url(/bgimg.png)] py-8 sm:py-12 md:py-16 px-4">
       <Container className="max-w-6xl mx-auto">
         {/* Header */}
 
         <div className="flex mx-auto">
-          <Button className="mb-6">Learning</Button>
+          <Button className="mb-4 sm:mb-6">Learning</Button>
         </div>
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6 sm:mb-8 md:mb-10">
           <Heading>Why Learning From Life Matters</Heading>
           <Paragraph>
             Life's real classroom teaches lessons books can't. Here's why it
@@ -39,20 +39,20 @@ const WhyLearningMatters = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="group bg-[#f8d6b3] border-2  border-black px-4 py-6"
-              style={{ boxShadow: "8px 8px 0px 0px #000" }}
+              className="group bg-[#f8d6b3] border-2 border-black px-4 py-4 sm:py-6"
+              style={{ boxShadow: "4px 4px 0px 0px #000" }}
             >
               {/* Title */}
-              <h3 className="text-[28px]  font-black text-black uppercase mb-4 ">
+              <h3 className="text-xl sm:text-2xl md:text-[28px] font-black text-black uppercase mb-3 sm:mb-4 ">
                 {benefit.title}
               </h3>
 
               {/* Description */}
-              <Paragraph className="!text-black">{benefit.desc}</Paragraph>
+              <Paragraph className="!text-black text-sm sm:text-base">{benefit.desc}</Paragraph>
             </div>
           ))}
         </div>

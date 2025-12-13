@@ -343,12 +343,12 @@ const LessonDetails = () => {
   const shareUrl = window.location.href;
 
   return (
-    <div className="min-h-screen bg-[url(/bgimg.png)] py-12 px-4">
+    <div className="min-h-screen bg-[url(/bgimg.png)] py-6 sm:py-8 md:py-12 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back Button */}
         <Link
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 mb-8 hover:text-gray-700 text-gray-900 font-semibold transition-colors"
+          className="inline-flex items-center gap-2 mb-6 sm:mb-8 hover:text-gray-700 text-gray-900 font-semibold transition-colors"
         >
           <IoMdArrowBack />
           Back to Lessons
@@ -357,39 +357,39 @@ const LessonDetails = () => {
         {/* Main Card */}
         <div className=" rounded-xl overflow-hidden mb-6">
           {/* Content */}
-          <div className="p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-4 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">
+              <span className="px-3 sm:px-4 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">
                 {lesson.category}
               </span>
-              <span className="px-4 py-1 bg-pink-100 text-pink-800 text-xs font-bold rounded-full">
+              <span className="px-3 sm:px-4 py-1 bg-pink-100 text-pink-800 text-xs font-bold rounded-full">
                 {lesson.emotionalTone}
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl font-bold mb-6 text-gray-900">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-gray-900">
               {lesson.title}
             </h1>
 
             {/* Author */}
-            <div className="my-8 ">
-              <div className="flex items-center gap-2">
+            <div className="my-4 sm:my-6 md:my-8">
+              <div className="flex flex-wrap items-center gap-2">
                 <img
                   src={lesson.creatorPhoto}
                   alt={lesson.creatorName}
                   className="w-8 rounded-full"
                 />
                 <div>
-                  <h3 className="text-[15px] font-medium text-gray-900">
+                  <h3 className="text-sm sm:text-[15px] font-medium text-gray-900">
                     {lesson.creatorName}
                   </h3>
                 </div>
-                <p className="text-[14px] ml-2 text-gray-600">
+                <p className="text-xs sm:text-[14px] ml-2 text-gray-600">
                   {readingTime} min read
                 </p>
-                <p className="text-[14px] ml-2 text-gray-600">
+                <p className="text-xs sm:text-[14px] ml-2 text-gray-600">
                   {new Date(lesson.createdDate).toLocaleDateString()}
                 </p>
               </div>
@@ -397,7 +397,7 @@ const LessonDetails = () => {
 
             {/* Image */}
             {lesson.image && (
-              <div className="w-full h-96 overflow-hidden rounded-[10px] mb-8">
+              <div className="w-full h-48 sm:h-64 md:h-80 lg:h-96 overflow-hidden rounded-[10px] mb-6 sm:mb-8">
                 <img
                   src={lesson.image}
                   alt={lesson.title}
@@ -407,9 +407,9 @@ const LessonDetails = () => {
             )}
 
             {/* Description */}
-            <div className="mb-8 prose max-w-none">
-              <p className="text-lg leading-relaxed text-gray-700">
-                <span className="text-5xl font-bold float-left mr-2 leading-none text-gray-600 ">
+            <div className="mb-6 sm:mb-8 prose max-w-none">
+              <p className="text-base sm:text-lg leading-relaxed text-gray-700">
+                <span className="text-3xl sm:text-4xl md:text-5xl font-bold float-left mr-2 leading-none text-gray-600 ">
                   {lesson.description.charAt(0)}
                 </span>
                 <span className="whitespace-pre-line">
@@ -419,7 +419,7 @@ const LessonDetails = () => {
             </div>
 
             {/* Stats & Actions */}
-            <div className="mb-8 p-6 bg-white border border-gray-100 rounded-lg">
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-white border border-gray-100 rounded-lg">
               {/* Actions */}
               <div className="flex flex-wrap gap-3 items-center">
                 <button

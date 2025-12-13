@@ -49,15 +49,15 @@ const Slider = () => {
     >
       {slides.map((slide, id) => (
         <SwiperSlide key={id}>
-          <div className="relative w-full h-[600px]">
+          <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
             <img
               src={slide.img}
               alt={slide.title}
               className="w-full h-full object-cover "
             />
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center">
-              <h2 className="text-2xl md:text-5xl lg:text-7xl font-bold mb-2">{slide.title}</h2>
-              <p className="text-lg">{slide.subtitle}</p>
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center px-4">
+              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-7xl font-bold mb-2">{slide.title}</h2>
+              <p className="text-sm sm:text-base lg:text-lg">{slide.subtitle}</p>
             </div>
           </div>
         </SwiperSlide>

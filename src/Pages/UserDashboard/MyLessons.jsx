@@ -175,37 +175,41 @@ const MyLessons = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f5f6] py-8 px-4">
+    <div className="min-h-screen bg-[#f9f5f6] py-4 sm:py-6 md:py-8 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2 font2">My Lessons</h1>
-          <p className="text-gray-600">Manage all your created lessons</p>
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 font2">
+            My Lessons
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">
+            Manage all your created lessons
+          </p>
         </div>
 
         {/* Table */}
         <div
-          className="bg-white  border-2 border-black overflow-hidden"
-          style={{ boxShadow: "8px 8px 0px 0px #000" }}
+          className="bg-white border-2 border-black overflow-hidden"
+          style={{ boxShadow: "4px 4px 0px 0px #000" }}
         >
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-gray-100 border-b-2 border-black">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-black">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-black">
                     Title
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-black">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-black">
                     Category
                   </th>
 
-                  <th className="px-4 py-3 text-left text-sm font-black">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-black">
                     Stats
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-black">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-black">
                     Created
                   </th>
-                  <th className="px-4 py-3 text-center text-sm font-black">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-black">
                     Actions
                   </th>
                 </tr>
@@ -216,8 +220,10 @@ const MyLessons = () => {
                     key={lesson._id}
                     className="border-b-2 border-gray-200 hover:bg-gray-50"
                   >
-                    <td className="px-4 py-4">
-                      <p className="font-bold text-gray-900">{lesson.title}</p>
+                    <td className="px-3 sm:px-4 py-3 sm:py-4">
+                      <p className="font-bold text-sm sm:text-base text-gray-900 line-clamp-2">
+                        {lesson.title}
+                      </p>
                       <p className="text-xs text-gray-500">
                         {lesson.emotionalTone}
                       </p>
