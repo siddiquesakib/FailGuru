@@ -6,10 +6,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { imageUpload } from "../../Utils";
+import Heading from "../../Component/Shared/Heading";
+import Paragraph from "../../Component/Shared/Paragraph";
 
 const AddLesson = () => {
   const { user } = useAuth();
-  console.log(user);
 
   const {
     register,
@@ -68,11 +69,9 @@ const AddLesson = () => {
       };
       await mutateAsync(LessonData);
       reset();
-      // console.log(data);
     } catch (err) {
       console.log(err);
     }
-    console.log(data);
   };
 
   const categories = [
@@ -95,87 +94,80 @@ const AddLesson = () => {
       );
       return result.data;
     },
-    enabled: !!user?.email, // Only run when user email exists
+    enabled: !!user?.email,
   });
 
   const isPremium =
     userData?.email === user?.email && userData?.isPremium === true;
 
   return (
-    <div className="min-h-screen bg-[#f9f5f6] py-4 sm:py-6 md:py-8 my-4 sm:my-6 md:my-10 px-2 sm:px-4">
+    <div className="min-h-screen bg-[url(/bgimg.png)] py-4 sm:py-6 md:py-8 ">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-4 sm:mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 font2">
-            Add New Lesson
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+        <div className="mb-6 sm:mb-8">
+          <Heading>Add New Lesson</Heading>
+          <Paragraph>
             Share your wisdom and life experiences with the community
-          </p>
+          </Paragraph>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white border-2 border-black p-4 sm:p-6 md:p-8"
+          className="bg-white border-2 border-black p-4 sm:p-6 md:p-8 "
           style={{ boxShadow: "4px 4px 0px 0px #000" }}
         >
           {/* Lesson Title */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-900 mb-2">
+          <div className="mb-4 sm:mb-5">
+            <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
               Lesson Title
             </label>
             <input
               type="text"
               placeholder="Enter your lesson title"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               {...register("title", {
-                required: "name lagbe",
-                maxLength: {
-                  message: "must be 20 word",
-                },
+                required: "Title is required",
               })}
             />
-            {errors.name && (
-              <p className="text-red-600 text-xs">{errors.name.message}</p>
+            {errors.title && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           {/* Full Description */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-900 mb-2">
-              Full Description / Story / Insight *
+          <div className="mb-4 sm:mb-5">
+            <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+              Full Description / Story / Insight
             </label>
             <textarea
-              type="text"
               placeholder="Share your story, insight, or life lesson in detail..."
-              rows="10"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              rows="6"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               {...register("description", {
-                required: "description need",
-                maxLength: {
-                  message: "description need",
-                },
+                required: "Description is required",
               })}
             />
             {errors.description && (
-              <p className="text-red-600 text-xs">
+              <p className="text-red-600 text-xs mt-1">
                 {errors.description.message}
               </p>
             )}
           </div>
 
           {/* Category and Emotional Tone - Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
             {/* Category */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
+              <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
                 Category
               </label>
               <select
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...register("category", {
-                  required: "category need",
+                  required: "Category is required",
                 })}
               >
                 <option value="">Select Category</option>
@@ -186,7 +178,7 @@ const AddLesson = () => {
                 ))}
               </select>
               {errors.category && (
-                <p className="text-red-600 text-xs">
+                <p className="text-red-600 text-xs mt-1">
                   {errors.category.message}
                 </p>
               )}
@@ -194,13 +186,13 @@ const AddLesson = () => {
 
             {/* Emotional Tone */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
-                Emotional Tone *
+              <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+                Emotional Tone
               </label>
               <select
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...register("emotionalTone", {
-                  required: "emotionalTone need",
+                  required: "Emotional tone is required",
                 })}
               >
                 <option value="">Select Tone</option>
@@ -211,62 +203,66 @@ const AddLesson = () => {
                 ))}
               </select>
               {errors.emotionalTone && (
-                <p className="text-red-600 text-xs">
+                <p className="text-red-600 text-xs mt-1">
                   {errors.emotionalTone.message}
                 </p>
               )}
             </div>
           </div>
 
-          {/* Image URL */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-900 mb-2">
-              Image URL (Optional)
+          {/* Image Upload */}
+          <div className="mb-4 sm:mb-5">
+            <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+              Image (Optional)
             </label>
             <input
               type="file"
-              id="image"
               accept="image/*"
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
               {...register("image")}
             />
             {errors.image && (
-              <p className="text-red-600 text-xs">{errors.image.message}</p>
+              <p className="text-red-600 text-xs mt-1">
+                {errors.image.message}
+              </p>
             )}
           </div>
 
           {/* Privacy and Access Level - Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6 sm:mb-8">
             {/* Privacy */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
-                Privacy *
+              <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+                Privacy
               </label>
               <select
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 {...register("privacy", {
-                  required: "privacy need",
+                  required: "Privacy is required",
                 })}
               >
                 <option value="Public">Public</option>
                 <option value="Private">Private</option>
               </select>
               {errors.privacy && (
-                <p className="text-red-600 text-xs">{errors.privacy.message}</p>
+                <p className="text-red-600 text-xs mt-1">
+                  {errors.privacy.message}
+                </p>
               )}
             </div>
 
             {/* Access Level */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
-                Access Level *
+              <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+                Access Level
               </label>
               <div className="relative">
                 <select
-                  {...register("accessLevel", { required: "accessLevel need" })}
+                  {...register("accessLevel", {
+                    required: "Access level is required",
+                  })}
                   disabled={!isPremium}
-                  className={`w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
                     !isPremium ? "bg-gray-100 cursor-not-allowed" : ""
                   }`}
                 >
@@ -278,14 +274,17 @@ const AddLesson = () => {
                 {!isPremium && (
                   <p className="text-xs text-gray-500 mt-1">
                     ⚠️ Upgrade to{" "}
-                    <Link to={"/pricing"} className="text-blue-600 underline">
+                    <Link
+                      to="/pricing"
+                      className="text-blue-600 underline font-semibold"
+                    >
                       Premium
                     </Link>{" "}
                     to create paid lessons
                   </p>
                 )}
                 {errors.accessLevel && (
-                  <p className="text-red-600 text-xs">
+                  <p className="text-red-600 text-xs mt-1">
                     {errors.accessLevel.message}
                   </p>
                 )}
@@ -296,9 +295,8 @@ const AddLesson = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="block w-full cursor-pointer bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-2 border-black transition-all relative"
+            className="w-full cursor-pointer bg-[#ffdb58] text-black font-bold py-3 sm:py-3.5 text-sm sm:text-base text-center border-2 border-black transition-all"
             style={{
-              backgroundColor: "#ffdb58",
               boxShadow: "4px 4px 0px 0px #000",
             }}
             onMouseEnter={(e) => {

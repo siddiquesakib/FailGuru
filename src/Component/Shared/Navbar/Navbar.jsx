@@ -3,10 +3,13 @@ import MyNavLink from "./MyNavlink";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { CircleUserRound, HeartPlus, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const { user, logOut, isPremiumUser } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -75,15 +78,16 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="flex items-center gap-3">
             {user ? (
-              <div className="relative group ">
+              <div className="relative">
                 {/* Avatar */}
                 <div className="flex justify-center items-center gap-1.5">
-                  {isPremiumUser ? (
+                  {isPremiumUser && (
                     <h1 className="font-semibold text-[#f0b127]">Premium ⭐</h1>
-                  ) : (
-                    <></>
                   )}
-                  <button className="w-10 h-10 rounded-full border-2 border-[#ffbb24] overflow-hidden hover:border-purple-600 transition-all">
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-10 h-10 rounded-full border-2 border-[#ffbb24] overflow-hidden transition-all hover:border-[#f0b127]"
+                  >
                     <img
                       src={user?.photoURL}
                       alt={user?.displayName}
@@ -91,47 +95,70 @@ const Navbar = () => {
                     />
                   </button>
                 </div>
+
                 {/* Dropdown Menu */}
-                <div
-                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-2 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
-                  style={{ boxShadow: "4px 4px 0px 0px #000" }}
-                >
-                  <div className="py-2">
-                    <h1 className="font-bold px-1 bg-purple-50">
-                      {user.displayName}
-                    </h1>
-                    <Link
-                      to="/dashboard"
-                      onClick={closeMobileMenu}
-                      className="block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-purple-50 transition-colors"
+                {isDropdownOpen && (
+                  <>
+                    {/* Overlay to close dropdown when clicking outside */}
+                    <div
+                      className="fixed inset-0 z-30"
+                      onClick={() => setIsDropdownOpen(false)}
+                    />
+
+                    {/* Dropdown */}
+                    <div
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-2 border-black z-40"
+                      style={{ boxShadow: "4px 4px 0px 0px #000" }}
                     >
-                      📊 Dashboard
-                    </Link>
-                    <Link
-                      to="/dashboard/profile"
-                      onClick={closeMobileMenu}
-                      className="block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-purple-50 transition-colors"
-                    >
-                      👤 Profile
-                    </Link>
-                    <Link
-                      to="/dashboard/my-favorite"
-                      onClick={closeMobileMenu}
-                      className="block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-purple-50 transition-colors"
-                    >
-                      🔖 My Favorite
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogOut();
-                        closeMobileMenu();
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      🚪 Logout
-                    </button>
-                  </div>
-                </div>
+                      <div className="">
+                        <h1 className="font-medium text-[11px] px-4 py-2 bg-purple-50 truncate">
+                          {user.displayName}
+                        </h1>
+                        <Link
+                          to="/dashboard"
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="flex gap-2 block px-4 py-2 font-medium text-[11px]  text-gray-800 hover:bg-gray-300 transition-colors"
+                        >
+                          <MdOutlineDashboardCustomize size={15} /> Dashboard
+                        </Link>
+                        <Link
+                          to="/dashboard/profile"
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="flex gap-2 block px-4 py-2 font-medium text-[11px]  text-gray-800 hover:bg-gray-300 transition-colors"
+                        >
+                          <CircleUserRound size={15} /> Profile
+                        </Link>
+                        <Link
+                          to="/dashboard/my-favorite"
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="flex gap-2 block px-4 py-2 font-medium text-[11px]  text-gray-800 hover:bg-gray-300 transition-colors"
+                        >
+                          <HeartPlus size={15} /> My Favorite
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogOut();
+                            setIsDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="w-full flex gap-2 text-left px-4 py-2 font-medium text-[11px]  text-red-600 hover:bg-red-100 transition-colors"
+                        >
+                          <LogOut size={15} />
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <>

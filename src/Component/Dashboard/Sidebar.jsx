@@ -6,6 +6,7 @@ import {
   BookOpenCheck,
   ChevronLeft,
   ChevronRight,
+  CircleUserRound,
   Crown,
   Flag,
   FolderKanban,
@@ -35,7 +36,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   return (
     <div
       className={`${
-        isCollapsed ? "w-15 md:w-20" : "w-40 md:w-50"
+        isCollapsed ? "w-15 md:w-20" : "w-35 md:w-50"
       } min-h-screen bg-[#f6f7f9] border-r-2 border-black p-4 transition-all duration-300 relative`}
     >
       {/* Collapse Toggle Button */}
@@ -53,7 +54,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           <img
             src={user?.photoURL || "https://i.pravatar.cc/150"}
             alt="User"
-            className="w-9 h-9 rounded-full border-2 border-black"
+            className="w-7 md:w-9  md:h-9 rounded-full border-2 border-black"
             title={user?.displayName || "User"}
           />
         </div>
@@ -72,7 +73,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               {isAdmin ? (
                 <Crown color="#f6b550" size={15} />
               ) : (
-                <User color="#000" size={17} />
+                <User color="#000" size={15} />
               )}
             </p>
           </div>
@@ -84,13 +85,13 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         {/* user */}
         <NavLink to="/dashboard" end className={linkClass} title="Dashboard">
           <span className="text-lg">
-            <MdOutlineDashboardCustomize size={17} />
+            <MdOutlineDashboardCustomize size={15} />
           </span>
           {!isCollapsed && <span className="text-[13px]">Dashboard</span>}
         </NavLink>
         <NavLink to="/dashboard/profile" className={linkClass} title="Profile">
           <span className="text-lg">
-            <UserPen size={17} />
+           <CircleUserRound size={15} />
           </span>
           {!isCollapsed && <span className="text-[13px]">Profile</span>}
         </NavLink>
@@ -100,7 +101,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           title="Add Lesson"
         >
           <span className="text-lg">
-            <FolderPlus size={17} />
+            <FolderPlus size={15} />
           </span>
           {!isCollapsed && <span className="text-[13px]">Add Lesson</span>}
         </NavLink>
@@ -110,7 +111,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           title="My Lessons"
         >
           <span className="text-lg">
-            <BookOpenCheck size={17} />
+            <BookOpenCheck size={15} />
           </span>
           {!isCollapsed && <span className="text-[13px]">My Lessons</span>}
         </NavLink>
@@ -120,7 +121,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           title="My Favorites"
         >
           <span className="text-lg">
-            <HeartPlus size={17} />
+            <HeartPlus size={15} />
           </span>
           {!isCollapsed && <span className="text-[13px]">My Favorites</span>}
         </NavLink>
@@ -141,7 +142,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               title="Admin Home"
             >
               <span className="text-lg">
-                <House size={17} />
+                <House size={15} />
               </span>
               {!isCollapsed && <span className="text-[13px]">Admin Home</span>}
             </NavLink>
@@ -151,7 +152,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               title="Manage Users"
             >
               <span className="text-lg">
-                <Users size={17} />
+                <Users size={15} />
               </span>
               {!isCollapsed && (
                 <span className="text-[13px]">Manage Users</span>
@@ -163,7 +164,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               title="Manage Lessons"
             >
               <span className="text-lg">
-                <FolderKanban size={17} />
+                <FolderKanban size={15} />
               </span>
               {!isCollapsed && (
                 <span className="text-[13px]">Manage Lessons</span>
@@ -175,7 +176,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               title="Reported Lessons"
             >
               <span className="text-lg">
-                <Flag size={17} />
+                <Flag size={15} />
               </span>
               {!isCollapsed && (
                 <span className="text-[13px]">Reported Lessons</span>
@@ -194,7 +195,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             title="Logout"
           >
             <span className="text-lg">
-              <LogOut />
+              <LogOut size={15}/>
             </span>
             {!isCollapsed && <span className="text-[13px]">Logout</span>}
           </button>

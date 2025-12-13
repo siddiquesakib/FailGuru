@@ -35,7 +35,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f5f6] py-4 sm:py-6 md:py-8 px-2 sm:px-4">
+    <div className="min-h-screen bg-[url(/bgimg.png)] py-4 sm:py-6 md:py-8 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Profile Header Card */}
         <div
@@ -91,12 +91,12 @@ const Profile = () => {
                   />
                 </div>
               ) : (
-                <h1 className="text-4xl font-black mb-2 font2">
+                <h1 className="text-xl md:text-4xl font-black mb-2">
                   {user?.displayName}
                 </h1>
               )}
 
-              <p className="text-gray-600 text-lg mb-1">{user?.email}</p>
+              <p className="text-gray-600 text-[13px] mb-1">{user?.email}</p>
 
               {isPremiumUser ? (
                 <span className="inline-block px-3 py-1 bg-[#ffdb58] text-black text-sm font-bold rounded-full border-2 border-black mb-4">
@@ -164,7 +164,7 @@ const Profile = () => {
 
           {/* Quick Actions */}
           <div className="mt-8 pt-6 border-t-3 border-black">
-            <h3 className="text-xl font-black mb-4 font2">Quick Actions</h3>
+            <h3 className="text-xl font-black mb-4 ">Quick Actions</h3>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/dashboard/add-lesson"
