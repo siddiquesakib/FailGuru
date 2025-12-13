@@ -230,7 +230,7 @@ const LessonDetails = () => {
 
   const handleDeleteComment = async (commentId) => {
     const result = await Swal.fire({
-      title: "Delete comment?",
+      title: "Delete Responses?",
       text: "This action cannot be undone",
       icon: "warning",
       showCancelButton: true,
@@ -375,14 +375,14 @@ const LessonDetails = () => {
 
             {/* Author */}
             <div className="my-8 ">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
                 <img
                   src={lesson.creatorPhoto}
                   alt={lesson.creatorName}
-                  className="w-10 rounded-full"
+                  className="w-8 rounded-full"
                 />
                 <div>
-                  <h3 className="text-[18px] font-semibold text-gray-900">
+                  <h3 className="text-[15px] font-medium text-gray-900">
                     {lesson.creatorName}
                   </h3>
                 </div>
@@ -419,7 +419,7 @@ const LessonDetails = () => {
             </div>
 
             {/* Stats & Actions */}
-            <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+            <div className="mb-8 p-6 bg-white border border-gray-100 rounded-lg">
               {/* Actions */}
               <div className="flex flex-wrap gap-3 items-center">
                 <button
@@ -439,7 +439,6 @@ const LessonDetails = () => {
                   )}
                   {lesson.favoritesCount || 0}
                 </button>
-
                 <button
                   onClick={handleLike}
                   disabled={toggleLikeMutation.isPending}
@@ -480,8 +479,8 @@ const LessonDetails = () => {
                     <LinkedinIcon size={30} round />
                   </LinkedinShareButton>
                   <TwitterShareButton url={shareUrl}>
-                    <div className="bg-black text-white w-9 h-9 rounded-full flex items-center justify-center">
-                      <BsTwitterX className="w-4 h-4" />
+                    <div className="bg-black text-white w-8 h-8 rounded-full flex items-center justify-center">
+                      <BsTwitterX className="w-3 h-3" />
                     </div>
                   </TwitterShareButton>
                 </div>
@@ -490,8 +489,8 @@ const LessonDetails = () => {
 
             {/* Comments */}
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-gray-900">
-                Comments ({comments.length})
+              <h3 className="text-xl font-bold mb-2 text-gray-900">
+                Responses ({comments.length})
               </h3>
 
               {/* Add Comment */}
@@ -499,15 +498,27 @@ const LessonDetails = () => {
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Share your thoughts..."
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3"
-                  rows="4"
+                  placeholder="What are your thoughts?"
+                  className="w-full p-4 text-[13px]  border border-gray-100 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows="3"
                 />
                 <button
                   onClick={handleComment}
-                  className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  className="block px-3 bg-[#ffdb58] text-black text-[12px] font-semibold py-2 cursor-pointer text-center border-2 border-black transition-all duration-200 hover:translate-x-1 hover:translate-y-1"
+                  style={{
+                    backgroundColor: "#ffdb58",
+                    boxShadow: "2px 2px 0px 0px #000",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "2px 2px 0px 0px #000";
+                    e.currentTarget.style.transform = "translate(-2px, -2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
+                    e.currentTarget.style.transform = "translate(2px, 2px)";
+                  }}
                 >
-                  Post Comment
+                  Post Responses
                 </button>
               </div>
 
@@ -519,33 +530,43 @@ const LessonDetails = () => {
                   </p>
                 ) : (
                   comments.map((c) => (
-                    <div key={c._id} className="bg-gray-50 rounded-lg p-5">
-                      <div className="flex items-start gap-4">
-                        <img
-                          src={c.userPhoto}
-                          alt={c.userName}
-                          className="w-10 h-10 rounded-full"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <p className="font-bold text-gray-900">
-                                {c.userName}
-                              </p>
-                              <span className="text-xs text-gray-500">
-                                {new Date(c.createdAt).toLocaleDateString()}
-                              </span>
+                    <div
+                      key={c._id}
+                      className="bg-white border border-gray-100 rounded-lg p-3"
+                    >
+                      <div className=" ">
+                        <div className="flex items-end gap-4 mb-3">
+                          <img
+                            src={c.userPhoto}
+                            alt={c.userName}
+                            className="w-8 h-8 rounded-full"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-[13px] text-gray-900">
+                                  {c.userName}
+                                </p>
+                                <span className="text-xs text-gray-500">
+                                  {new Date(c.createdAt).toLocaleDateString()}
+                                </span>
+                              </div>
+                              {user && user.email === c.userEmail && (
+                                <button
+                                  onClick={() => handleDeleteComment(c._id)}
+                                  className="text-red-500 hover:text-red-600 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                                >
+                                  Delete <MdDeleteForever size={18} />
+                                </button>
+                              )}
                             </div>
-                            {user && user.email === c.userEmail && (
-                              <button
-                                onClick={() => handleDeleteComment(c._id)}
-                                className="text-red-600 hover:text-red-700 text-sm font-semibold flex items-center gap-1"
-                              >
-                                Delete <MdDeleteForever className="text-lg" />
-                              </button>
-                            )}
                           </div>
-                          <p className="text-gray-700">{c.comment}</p>
+                        </div>
+                        <div>
+                          {" "}
+                          <p className="text-gray-700 text-[13px] ">
+                            {c.comment}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -559,7 +580,7 @@ const LessonDetails = () => {
 
       {/* Report Modal */}
       {showReportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-xs  flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
             <h3 className="text-2xl font-bold mb-4 text-gray-900">
               Report Lesson
