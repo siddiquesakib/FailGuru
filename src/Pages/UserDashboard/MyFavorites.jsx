@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const MyFavorites = () => {
   const { user } = useAuth();
@@ -60,8 +61,7 @@ const MyFavorites = () => {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading favorites</div>;
+  if (isLoading) return <Loading />;
 
   // Handle remove favorite with confirmation
   const handleRemoveFavorite = (lessonId, lessonTitle) => {

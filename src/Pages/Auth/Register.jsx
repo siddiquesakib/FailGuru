@@ -6,9 +6,10 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { imageUpload } from "../../Utils";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const Register = () => {
-  const { signInWithGoogle, createUser, updateUser } = useAuth();
+  const { signInWithGoogle, createUser, updateUser, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const f = location.state || "/";
@@ -50,6 +51,10 @@ const Register = () => {
       toast.error(err?.message);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {

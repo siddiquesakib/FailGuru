@@ -12,7 +12,7 @@ const Video = () => {
           <Button className="mb-4 sm:mb-6">video</Button>
         </div>
         <Heading>Think Big</Heading>
-        <Paragraph className="text-base sm:text-lg text-black">
+        <Paragraph>
           how thinking big is the first step towards success.
         </Paragraph>
       </div>

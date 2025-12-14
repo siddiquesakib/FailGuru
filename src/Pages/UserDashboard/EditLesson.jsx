@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { imageUpload } from "../../Utils";
 import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const EditLesson = () => {
   const { user } = useAuth();
@@ -139,14 +140,7 @@ const EditLesson = () => {
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[url(/bgimg.png)] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold">Loading lesson...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

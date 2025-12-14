@@ -40,23 +40,43 @@ export const router = createBrowserRouter([
       },
       {
         path: "payment-success",
-        element: <PaymentSuccess />,
+        element: (
+          <PrivateRoute>
+            <PaymentSuccess />
+          </PrivateRoute>
+        ),
       },
       {
         path: "payment-cancle",
-        element: <PaymentCancle />,
+        element: (
+          <PrivateRoute>
+            <PaymentCancle />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/publiclessons",
-        Component: PublicLessons,
+        element: (
+          <PrivateRoute>
+            <PublicLessons />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/publiclessons/:id",
-        element: <LessonDetails />,
+        element: (
+          <PrivateRoute>
+            <LessonDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/lessons/:id",
-        element: <LessonDetails />,
+        element: (
+          <PrivateRoute>
+            <LessonDetails />
+          </PrivateRoute>
+        ),
       },
     ],
   },

@@ -6,9 +6,10 @@ import Container from "../../Component/Shared/Container";
 import useAuth from "../../hooks/useAuth";
 import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const PublicLessons = () => {
-  const { isPremiumUser } = useAuth();
+  const { isPremiumUser, loading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTone, setSelectedTone] = useState("");
@@ -72,6 +73,10 @@ const PublicLessons = () => {
     "Mistakes Learned",
   ];
   const emotionalTones = ["Motivational", "Sad", "Realization", "Gratitude"];
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Container className="min-h-screen py-4 sm:py-6 md:py-8 px-2 sm:px-4 pt-10">

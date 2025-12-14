@@ -3,9 +3,10 @@ import { Link } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const Profile = () => {
-  const { user, isPremiumUser, updateUser, setUser, refetchUserData } =
+  const { user, isPremiumUser, updateUser, setUser, refetchUserData, loading } =
     useAuth();
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedName, setEditedName] = useState("");
@@ -14,7 +15,6 @@ const Profile = () => {
 
   const handleEditProfile = async () => {
     if (isEditMode) {
-      // Validate inputs
       if (!editedName.trim()) {
         toast.error("Name cannot be empty!");
         return;
@@ -27,11 +27,7 @@ const Profile = () => {
 
       try {
         setIsUpdating(true);
-
-        // Update Firebase profile
         await updateUser(editedName, editedPhoto);
-
-        // Update MongoDB backend
         await axios.patch(
           `${import.meta.env.VITE_API_URL}/users/${user?.email}`,
           {
@@ -39,15 +35,11 @@ const Profile = () => {
             photoURL: editedPhoto,
           }
         );
-
-        // Update local user state for real-time UI update
         setUser({
           ...user,
           displayName: editedName,
           photoURL: editedPhoto,
         });
-
-        // Refetch user data from backend
         await refetchUserData();
 
         toast.success("Profile updated successfully! ✨");
@@ -77,6 +69,10 @@ const Profile = () => {
         <p className="text-2xl font-bold">Please login to view profile</p>
       </div>
     );
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (

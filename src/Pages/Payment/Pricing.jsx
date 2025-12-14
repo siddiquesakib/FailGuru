@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
 import Button from "../../Component/Shared/Button";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const Pricing = () => {
   const pricingPlans = [
@@ -42,7 +43,7 @@ const Pricing = () => {
     },
   ];
 
-  const { user, isPremiumUser, refetchUserData } = useAuth();
+  const { user, isPremiumUser, refetchUserData, loading } = useAuth();
   const navigate = useNavigate();
 
   const handlePayment = async () => {
@@ -73,6 +74,10 @@ const Pricing = () => {
       console.error("Failed to update premium status:", error);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="py-1  px-4 min-h-[calc(100vh-250px)] bg-[url(/bgimg.png)]">

@@ -4,6 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const f = location.state || "/";
-  const { signInWithGoogle, signIn } = useAuth(); // Add signIn
+  const { signInWithGoogle, signIn, loading } = useAuth(); // Add signIn
 
   const { mutateAsync } = useMutation({
     mutationFn: async (dataregister) =>
@@ -59,6 +60,10 @@ const Login = () => {
       toast.error(err?.message);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-white  shadow-xl w-full p-8 relative">

@@ -7,9 +7,10 @@ import axios from "axios";
 import useAxiosSecure from "../../hooks/UseAxios";
 import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
+import Loading from "../../Component/Shared/Loading/Loading";
 
 const MyLessons = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   // Helper: decode HTML entities, strip tags and truncate
@@ -37,11 +38,7 @@ const MyLessons = () => {
   };
 
   //fetch lessons
-  const {
-    data: lessons = [],
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: lessons = [], refetch } = useQuery({
     queryKey: ["my-lessons", user?.email],
     queryFn: async () => {
       const result = await axios.get(
@@ -85,6 +82,10 @@ const MyLessons = () => {
       }
     });
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen bg-[url(/bgimg.png)] py-4 sm:py-6 md:py-8 sm:px-4">
