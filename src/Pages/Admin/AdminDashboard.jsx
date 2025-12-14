@@ -6,6 +6,16 @@ import Heading from "../../Component/Shared/Heading";
 import Paragraph from "../../Component/Shared/Paragraph";
 import { CheckCheck, Flag, FolderKanban, User, User2Icon } from "lucide-react";
 import { CiTrophy } from "react-icons/ci";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const AdminDashboard = () => {
   // Fetch admin statistics
@@ -75,6 +85,20 @@ const AdminDashboard = () => {
     {}
   );
   console.log(topCreator);
+
+  //data chart
+  const totalLessons = lessons.length;
+  const totalReports = reports.length;
+  const Totalusers = users.length;
+
+  const chartData = [
+    {
+      name: "My Dashboard",
+      lessons: totalLessons,
+      Users: Totalusers,
+      Reports: totalReports,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-[url(/bgimg.png)] py-8 md:px-4">
@@ -179,6 +203,50 @@ const AdminDashboard = () => {
               Keep it up! 🎉
             </div>
           </div>
+        </div>
+
+        <div
+          className="pt-6 sm:pt-10 max-w-4xl mx-auto bg-white  border-2 border-black p-4 sm:p-6 mb-8"
+          style={{ boxShadow: "6px 6px 0px 0px #000" }}
+        >
+          <h2 className="text-xl sm:text-2xl font-black text-gray-800 mb-4 sm:mb-6">
+            📊 Statistics Overview
+          </h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" tick={{ fontSize: 12 }} tickMargin={10} />
+              <YAxis tick={{ fontSize: 12 }} width={40} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "2px solid #000",
+                  borderRadius: "8px",
+                  boxShadow: "4px 4px 0px 0px #000",
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: "14px" }} iconType="circle" />
+              <Bar
+                dataKey="lessons"
+                fill="#3b82f6"
+                name="My Lessons"
+                radius={[8, 8, 0, 0]}
+              />
+              <Bar
+                dataKey="Users"
+                fill="#10b981"
+                name="Totals Users"
+                radius={[8, 8, 0, 0]}
+              />
+              <Bar
+                dataKey="Reports"
+                fill="#ec4899"
+                name="Total Reports"
+                radius={[8, 8, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Most Active Contributors */}
