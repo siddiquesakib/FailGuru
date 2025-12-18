@@ -47,6 +47,11 @@ const Pricing = () => {
   const navigate = useNavigate();
 
   const handlePayment = async () => {
+    if (!user) {
+      navigate("/auth/login");
+      return;
+    }
+
     const paymentInfo = {
       name: user?.displayName,
       email: user?.email,
