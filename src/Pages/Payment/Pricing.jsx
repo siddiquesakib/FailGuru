@@ -187,7 +187,7 @@ const Pricing = () => {
                       </button>
                     ) : (
                       <button
-                        onClick={"/"}
+                        onClick={() => navigate("/")}
                         className="block w-full cursor-pointer bg-[#ffdb58] text-black font-semibold py-4 text-base text-center border-2 border-black transition-all duration-200"
                         style={{
                           boxShadow: "4px 4px 0px 0px #000",
