@@ -60,19 +60,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/publiclessons/:id",
-        element: (
-          <PrivateRoute>
-            <LessonDetails />
-          </PrivateRoute>
-        ),
+        element: <LessonDetails />,
       },
       {
         path: "/lessons/:id",
-        element: (
-          <PrivateRoute>
-            <LessonDetails />
-          </PrivateRoute>
-        ),
+        element: <LessonDetails />,
       },
     ],
   },
